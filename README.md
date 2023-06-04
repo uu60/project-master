@@ -59,6 +59,7 @@ vim redis.conf
    Then modify the line 61 with: `#bind 127.0.0.1` (add comment)
    Modify line 80 with: `protected-mode no`
    Modify line 128 with: `daemonize yes`
+   Enter `:wq` and press enter. 
 
 4. Start Redis at machine's starting up.
 
