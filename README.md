@@ -80,3 +80,23 @@ systemctl enable redis.service
 2. 8.137.98.1
 3. 47.109.79.121
 4. 47.109.56.80
+### 2 Install RabbitMQ
+
+```shell
+yum install epel-release
+# install dependency erlang
+wget http://packages.erlang-solutions.com/erlang/rpm/centos/7/x86_64/esl-erlang_25.0.3-1~centos~7_amd64.rpm
+yum install esl-erlang_25.0.3-1~centos~7_amd64.rpm
+
+# install rabbitmq
+wget https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.0/rabbitmq-server-3.12.0-1.el8.noarch.rpm
+rpm -Uvh rabbitmq-server-3.12.0-1.el8.noarch.rpm 
+
+# start rabbitmq
+systemctl start rabbitmq-server
+systemctl enable rabbitmq-server
+
+# install web management plugin
+rabbitmq-plugins enable rabbitmq_management
+```
+
