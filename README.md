@@ -1,6 +1,8 @@
 # project-master
 
-### 1 Install MySQL, Redis and RabbitMQ
+2023/06/03
+
+### 1 Install MySQL, Redis
 
 #### 1.1 Install MySQL
 
@@ -63,4 +65,18 @@ vim redis.conf
 
 4. Start Redis at machine's starting up.
 
-`systemctl enable redis.service`
+```shell
+systemctl start redis.service
+systemctl enable redis.service
+```
+
+<hr>
+
+2023/06/05
+
+### 1 Server List
+
+1. 8.137.96.5
+2. 8.137.98.1
+3. 47.109.79.121
+4. 47.109.56.80
