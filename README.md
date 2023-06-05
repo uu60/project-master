@@ -100,3 +100,18 @@ systemctl enable rabbitmq-server
 rabbitmq-plugins enable rabbitmq_management
 ```
 
+### 3 Install Nginx (only on server1)
+
+Reference: https://blog.csdn.net/qq_33381971/article/details/123328191
+
+```shell
+yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel
+wget https://nginx.org/download/nginx-1.25.0.tar.gz
+tar -zxvf nginx-1.25.0.tar.gz
+cd nginx-1.25.0
+./configure --prefix=/usr/local/nginx
+make
+make install
+echo 'export PATH=$PATH:/usr/local/nginx/sbin' >> /etc/profile
+```
+
