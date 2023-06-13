@@ -2,13 +2,37 @@
   <div>
     <el-container>
       <el-header>
-        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-          <el-menu-item index="/Home">首页</el-menu-item>
-          <el-menu-item index="/Menu2">菜单二</el-menu-item>
-        </el-menu>
-
-        
+        <el-row>
+          <!--导航栏-->
+          <el-col span="10">
+            <div>
+              <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-menu-item index="/Home">首页</el-menu-item>
+                <el-menu-item index="/Menu2">菜单二</el-menu-item>
+              </el-menu>
+            </div>
+          </el-col>
+          <!--搜索框-->
+          <el-col offset="5" span="9" style="padding: 15px">
+            <div>
+              <el-input
+                  v-model="keyword"
+                  :placeholder="placeholder"
+                  prefix-icon="el-icon-search"
+                  style="width: 350px;margin-right: 10px"
+                  clearable></el-input>
+              <el-button
+                  icon="el-icon-search"
+                  type="primary"
+                  @click="search">
+                Search
+              </el-button>
+            </div>
+          </el-col>
+        </el-row>
       </el-header>
+
+      <!--主页面-->
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -22,12 +46,18 @@
 
 export default {
   name: "MainComponent",
-  components: {
-
+  components: {},
+  props: {
+    placeholder: {
+      type: String,
+      default: '请输入进行搜索'
+    }
   },
+
   data() {
     return {
       activeIndex: '/Home',
+      keyword: ""
     };
   },
   methods: {
