@@ -2,23 +2,12 @@
   <div>
     <el-container>
       <el-header>
-        <el-row>
-          <el-col span="2">
-            <div>logo</div>
-          </el-col>
-          <el-col span="20">
-            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-              <el-menu-item index="/Home">首页</el-menu-item>
-              <el-menu-item index="/Menu2">菜单二</el-menu-item>
-            </el-menu>
-          </el-col>
-            <el-col span="1">
-              <div>Name</div>
-            </el-col>
-            <el-col span="1">
-              <div>Icon</div>
-            </el-col>
-        </el-row>
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+          <el-menu-item index="/Home">首页</el-menu-item>
+          <el-menu-item index="/Menu2">菜单二</el-menu-item>
+        </el-menu>
+
+        
       </el-header>
       <el-main>
         <router-view></router-view>
@@ -30,9 +19,12 @@
 
 <script>
 
+
 export default {
   name: "MainComponent",
-  components: {},
+  components: {
+
+  },
   data() {
     return {
       activeIndex: '/Home',
@@ -47,7 +39,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .col1 {
   background-color: rgb(237, 250, 177);
   color: aliceblue;
@@ -62,4 +54,19 @@ export default {
   background-color: rgb(141, 123, 241);
   color: aliceblue;
 }
+
+//header {
+//  height: 1rem;
+//  width: 100%;
+//  background-color: rgba(0, 0, 255, .2);
+//
+//  h1 {
+//    font-size: 0.375rem;
+//    color: white;
+//    text-align: center;
+//    line-height: 1rem;
+//  }
+//}
+
+
 </style>
