@@ -184,3 +184,12 @@ ser3: display-service
 `ssh root@ser3 -L 3303:localhost:3306 -L 6379:localhost:6379`
 
 `ssh root@ser4 -L 3304:localhost:3306`
+
+<hr/>
+
+https://github.com/MicroEngine/DevilYuan
+https://github.com/bosspen1/stock
+https://github.com/Gary-Hertel/StockQuant
+https://github.com/pythonstock/stock
+https://github.com/bbfamily/abu
+https://github.com/tp-yan/WebStockPredict
