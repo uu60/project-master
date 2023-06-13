@@ -13,7 +13,9 @@
       </section>
 
       <!--     中容器-->
-      <section class="itemCenter"></section>
+      <section class="itemCenter">
+        <div class="echart" id="mychart" style="width:100%; height: 400px;"></div>
+      </section>
 
       <!--      右容器-->
       <section class="itemRight">
@@ -35,6 +37,7 @@ import ItemOne from "@/components/itemOne";
 import ItemTwo from "@/components/itemTwo";
 import ItemThree from "@/components/itemThree";
 import ItemFour from "@/components/itemFour";
+
 
 export default {
   name: "MainPage",

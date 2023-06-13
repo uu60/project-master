@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-container>
+      <!--菜单栏-->
       <el-header>
         <el-row>
           <!--导航栏-->
@@ -42,7 +43,7 @@
 
 
 <script>
-
+import axios from "axios"
 
 export default {
   name: "MainComponent",
@@ -64,6 +65,17 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
       this.$router.push(key);
+    },
+    search() {
+      axios.get('').then
+      {
+        response => {
+          console.log("请求成功", response.data)
+        },
+            error => {
+              console.log("请求失败", error.data)
+            }
+      }
     }
   }
 }
