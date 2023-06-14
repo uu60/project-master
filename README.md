@@ -115,3 +115,72 @@ make install
 echo 'export PATH=$PATH:/usr/local/nginx/sbin' >> /etc/profile
 ```
 
+<hr/>
+
+2023/06/13
+
+### 1 Server changes
+
+ser2 installed nacos.
+
+ser1 will be used to deploy gateway. port: 10000
+
+### 2 Install JDK17
+
+https://blog.csdn.net/R_Y_Fren/article/details/126707829
+
+Or transfer from installed serser:
+
+`scp -r root@ser2:/usr/java /usr`
+
+```shell
+vim /etc/profile
+
+JAVA_HOME=/usr/java/jdk-17.0.7 # modify
+CLASSPATH=$JAVA_HOME/lib/
+PATH=$PATH:$JAVA_HOME/bin
+export PATH JAVA_HOME CLASSPATH
+```
+
+### 3 Install Maven
+
+https://maven.apache.org/download.cgi
+
+https://blog.csdn.net/Silly011/article/details/122179552
+
+Or transfer from installed serser:
+
+`scp -r root@ser2:/usr/maven /usr`
+
+```shell
+vim /etc/profile
+
+export MAVEN_HOME=/usr/local/maven/apache-maven-3.9.2 # modify
+export PATH=${PATH}:${MAVEN_HOME}/bin
+```
+
+### 4 Servers components
+
+ser1: nginx gateway
+
+ser2: nacos
+
+ser3: display-service
+
+### 5 Install Anaconda on Server 4
+
+`wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh`
+
+<hr/>
+
+2023/06/14
+
+### 1 Transmit local requests through ssh 
+
+`ssh root@ser1 -L 3301:localhost:3306 -L 15672:localhost:15672 5672:localhost:5672`
+
+`ssh root@ser2 -L 3302:localhost:3306 -L 8848:localhost:8848 -L 9848:localhost:9848`
+
+`ssh root@ser3 -L 3303:localhost:3306 -L 6379:localhost:6379`
+
+`ssh root@ser4 -L 3304:localhost:3306`
