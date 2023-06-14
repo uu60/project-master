@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: display
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+      config:
+        server-addr: localhost:8848
+        namespace: 8aecdca5-460e-4adb-ab53-b1c1c26300f3
+        file-extension: yaml
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
