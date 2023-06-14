@@ -23,7 +23,6 @@ public class KDataController {
 
     @GetMapping("/data/{code}")
     public R getExistedData(@PathVariable String code) {
-
         List<KDataEntity> existedData = kDataService.getExistedData(code);
         if (existedData.isEmpty()) {
             return R.other(R.Codes.K_DATA_WAIT, "Please wait for update.");

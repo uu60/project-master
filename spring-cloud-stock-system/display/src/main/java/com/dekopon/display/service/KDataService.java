@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface KDataService {
     List<KDataEntity> getExistedData(String code);
+
+    KDataEntity getLatestKData(String code);
 }
