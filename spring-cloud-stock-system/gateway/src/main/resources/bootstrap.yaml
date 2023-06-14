@@ -5,6 +5,7 @@ spring:
     nacos:
       discovery:
         server-addr: 8.137.98.1:8848
+        ip: 8.137.96.5
       config:
         server-addr: 8.137.98.1:8848
         namespace: 8aecdca5-460e-4adb-ab53-b1c1c26300f3

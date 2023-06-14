@@ -2,8 +2,10 @@ package com.dekopon.display.rabbit;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dekopon.display.configuration.RabbitConfiguration;
+import com.dekopon.display.configuration.RedisConfiguration;
 import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.KDataEntity;
+import com.dekopon.display.service.KDataService;
 import com.dekopon.pojo.R;
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
@@ -11,6 +13,7 @@ import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +36,11 @@ public class KDataListener {
     @Autowired
     KDataMapper kDataMapper;
     @Autowired
+    KDataService kDataService;
+    @Autowired
     Gson gson;
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
     @RabbitListener(queues = RabbitConfiguration.K_DATA_RESULT_QUEUE_NAME)
     public void saveToDB(Message message,
@@ -41,8 +48,7 @@ public class KDataListener {
                          Channel channel) {
         String code = content.getMsg();
         // 获取加载过的最新的记录
-        KDataEntity kDataEntity = kDataMapper.selectOne(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode
-                , code).orderByDesc(KDataEntity::getTime).last("limit 1"));
+        KDataEntity kDataEntity = kDataService.getLatestKData(code);
 
         List<KDataEntity> records = ((List<Map<String, Object>>) content.getData()).stream().map(map -> {
             KDataEntity entity = new KDataEntity();
@@ -63,7 +69,7 @@ public class KDataListener {
             records = records.stream().filter(record -> record.getTime().compareTo(kDataEntity.getTime()) > 0).toList();
         }
         records.forEach(e -> kDataMapper.insert(e));
-
+        redisTemplate.opsForValue().getAndDelete(RedisConfiguration.K_DATA_PREFIX + code);
 
         try {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
