@@ -37,7 +37,8 @@ import ItemOne from "@/components/itemOne";
 import ItemTwo from "@/components/itemTwo";
 import ItemThree from "@/components/itemThree";
 import ItemFour from "@/components/itemFour";
-
+import pubsub from 'pubsub-js'
+import moment from 'moment'
 
 export default {
   name: "MainPage",
@@ -49,33 +50,73 @@ export default {
     ItemThree,
     ItemFour
   },
+
   mounted() {
-    this.initEcharts();
+    pubsub.subscribe('数据', (msgName, data) => {
+      console.log("收到了数据")
+      // console.log(moment(new Date(stockdata[0].time)).format('YYYY-MM-DD HH:mm:ss'));
+      this.initData(data);
+      this.initEcharts(this.stotitle, this.stodata);
+    });
+
   },
   methods: {
-    initEcharts() {
+    initData(data) {
+      this.stotitle = data.data[0].code;
+      this.stodata = data.data;
+      console.log("初始化完成")
+    },
+
+    initEcharts(stockTitle, stockData) {
+      // var date = []
+      // for (var i = 0; i < stockData.length; i++) {
+      //   date.add(stockData[i].data)
+      // }
+      // console.log(this.title)
       const option = {
         title: {
-          text: "K线示例"
+          left: '45%',
+          text: stockTitle
         },
-        tooltip: {},
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+          }
+        },
         legend: {},
         xAxis: {
-          data: ["2017-10-24", "2017-10-25", "2017-10-26", "2017-10-27"]
+          data: stockData.map(item => moment(new Date(item.time)).format('YYYY-MM-DD HH:mm:ss'))
         },
         yAxis: {
-          scale: true
+          scale: true,
+          splitArea: {
+            show: true
+          }
         },
+        dataZoom: [
+          {
+            show: true,
+            startValue: stockData.length - 30,
+            endValue: stockData.length
+          }
+        ],
         series: [
           {
             type: "candlestick",
-            data: [
-              [20, 34, 10, 38], //今开、当前价格、最低价格、最高价
-              [40, 35, 30, 50],
-              [31, 38, 33, 44],
-              [38, 15, 5, 42]
-            ]
-          }
+            data: stockData.map(item => {
+              return [item.open, item.close, item.low, item.high]
+            })
+          },
+          // {
+          //   name: 'ma5',
+          //   type: 'line',
+          //   smooth: true,
+          //   data: this.macd(data, 5),
+          //   lineStyle: {
+          //     opacity: .5
+          //   }
+          // }
         ]
       };
       const myChart = echarts.init(document.getElementById("mychart"));
@@ -84,8 +125,24 @@ export default {
       window.addEventListener("resize", () => {
         myChart.resize();
       });
-    }
-  }
+    },
+    // macd(data, n) {
+    //   let  result = []
+    //   let sum = 0
+    //
+    //   data.map((item, index)=>{
+    //     sum += item.close
+    //
+    //     if(index<n) {
+    //       return '';
+    //     } else {
+    //       sum -= data[index-n].close;
+    //       return (sum/n).toFixed(2);
+    //     }
+    //   })
+    // }
+  },
+
 }
 </script>
 
@@ -105,7 +162,7 @@ export default {
     flex: 5;
     height: 10.5 rpx;
     border: 1px solid blue;
-    padding: 0.125rem;
+    padding: 0.1rem;
     margin: .25rem;
   }
 }

@@ -44,6 +44,7 @@
 
 <script>
 import axios from "axios"
+import pubsub from 'pubsub-js'
 
 export default {
   name: "MainComponent",
@@ -67,16 +68,16 @@ export default {
       this.$router.push(key);
     },
     search() {
-      axios.get('').then
-      {
-        response => {
-          console.log("请求成功", response.data)
-        },
-            error => {
-              console.log("请求失败", error.data)
-            }
-      }
-    }
+      axios.get('http://localhost:8080/stock/display/data/AAPL')
+          .then(res => {
+            // console.log(res.data)
+            pubsub.publish("数据",res.data)
+            console.log("查到了数据")
+          })
+          .catch(err => {
+            console.error(err);
+          })
+    },
   }
 }
 </script>

@@ -13,6 +13,8 @@
     "echarts": "^5.4.2",
     "element-ui": "^2.15.13",
     "lib-flexible": "^0.3.2",
+    "moment-timezone": "^0.5.43",
+    "pubsub-js": "^1.9.4",
     "vue": "^2.6.14"
   },
   "devDependencies": {

@@ -6,12 +6,13 @@
 
 <script>
 import MainComponent from "@/components/MainComponent";
-
+import SearchPage from "@/pages/SearchPage";
 
 export default {
   name: 'App',
   components: {
-    MainComponent
+    MainComponent,
+    SearchPage
   }
 }
 </script>

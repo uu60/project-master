@@ -1,13 +1,13 @@
 import VueRouter from "vue-router";
 import MainPage from "@/pages/MainPage";
 import Menu2Page from "@/pages/Menu2Page";
-
-
+import SearchPage from "@/pages/SearchPage";
+import MainComponent from "@/components/MainComponent";
 const router = new VueRouter({
     routes: [
         {
             path:'/',
-            redirect:'/Home'
+            redirect:'/SearchPage'
         },
         {
             path:'/Home',
@@ -16,6 +16,10 @@ const router = new VueRouter({
         {
             path:'/Menu2',
             component:Menu2Page
+        },
+        {
+            path: '/SearchPage',
+            component: SearchPage
         }
     ]
 })
