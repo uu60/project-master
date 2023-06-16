@@ -1,8 +1,5 @@
 package com.dekopon.display.configuration;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
@@ -21,7 +18,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfiguration {
 
-    public final static String K_DATA_PREFIX = "k_data::";
+    public final static String K_DATA_DAILY_PREFIX = "k_data::daily::";
+    public final static String K_DATA_HOURLY_PREFIX = "k_data::hourly::";
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
