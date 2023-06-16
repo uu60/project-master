@@ -16,17 +16,24 @@ import java.util.Date;
 @Data
 @TableName("k_data")
 public class KDataEntity {
+
+    public static class Const {
+        public static final Integer DAILY_DAILY = 1;
+        public static final Integer DAILY_TODAY = 0;
+    }
+
     @TableId(type = IdType.AUTO)
     Integer id;
     String code;
     Date time;
+    Integer historical;
+    Integer daily;
     BigDecimal open;
     BigDecimal high;
     BigDecimal low;
     BigDecimal close;
-    Integer volume;
+    Long volume;
     BigDecimal dividends;
     @TableField("stock_splits")
     BigDecimal stockSplits;
-    Boolean historical;
 }
