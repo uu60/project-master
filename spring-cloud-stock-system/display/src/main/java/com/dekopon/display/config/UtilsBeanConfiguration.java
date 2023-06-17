@@ -1,4 +1,4 @@
-package com.dekopon.display.configuration;
+package com.dekopon.display.config;
 
 import com.google.gson.Gson;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2023/6/13 19:49
  */
 @Configuration
-public class UtilBeanConfiguration {
+public class UtilsBeanConfiguration {
 
     @Bean
     public Gson gson() {

@@ -1,5 +1,8 @@
-package com.dekopon.display.configuration;
+package com.dekopon.display.config;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
@@ -48,5 +51,18 @@ public class RedisConfiguration {
 
         template.afterPropertiesSet();
         return template;
+    }
+
+
+    @Bean(destroyMethod = "shutdown")
+    public RedissonClient redisson() {
+        RedissonClient redissonClient;
+        // 1. 创建配置
+        Config config = new Config();
+        config.useClusterServers().addNodeAddress("redis://8.137.96.5:6379", "redis://8.137.98.1:6379", "redis://47.109.79.121:6379", "redis://47.109.56.80:6379");
+
+        // 2. 根据Config创建出RedissonClient实例
+        redissonClient = Redisson.create(config);
+        return redissonClient;
     }
 }

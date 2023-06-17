@@ -1,10 +1,11 @@
 package com.dekopon.display.rabbit;
 
-import com.dekopon.display.configuration.RabbitConfiguration;
-import com.dekopon.display.configuration.RedisConfiguration;
+import com.dekopon.display.config.RabbitConfiguration;
+import com.dekopon.display.config.RedisConfiguration;
 import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.KDataEntity;
 import com.dekopon.display.service.KDataService;
+import com.dekopon.display.service.impl.KDataServiceImpl;
 import com.dekopon.pojo.R;
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -44,43 +44,48 @@ public class KDataRabbitListener {
                          R r,
                          Channel channel) {
         try {
-            Map<String, Object> data = (Map<String, Object>) r.getData();
-            String code = (String) data.get("code");
-            Integer daily = (Integer) data.get("daily");
-            List<Map<String, Object>> dataData = (List<Map<String, Object>>) data.get("data");
+            Integer code = r.getCode();
+            // 有新数据
+            if (code == 0) {
+                Map<String, Object> data = (Map<String, Object>) (r.getData());
+                String dataCode = (String) data.get("code");
+                Integer dataDaily = (Integer) data.get("daily");
+                List<Map<String, Object>> dataData = (List<Map<String, Object>>) data.get("data");
 
-            List<KDataEntity> records = dataData.stream().map(map -> {
-                KDataEntity entity = new KDataEntity();
-                entity.setTime(transformDate((String) map.get("Time")));
-                entity.setClose(new BigDecimal((String) map.get("Close")));
-                entity.setLow(new BigDecimal((String) map.get("Low")));
-                entity.setOpen(new BigDecimal((String) map.get("Open")));
-                entity.setHigh(new BigDecimal((String) map.get("High")));
-                entity.setDaily(daily);
-                entity.setCode(code);
-                entity.setDividends(new BigDecimal((String) map.get("Dividends")));
-                Object volume = map.get("Volume");
-                volume = volume instanceof Integer ? ((Integer) volume).longValue() : volume;
-                entity.setVolume((Long) volume);
-                entity.setStockSplits(new BigDecimal((String) map.get("Stock Splits")));
-                entity.setHistorical(1);
+                List<KDataEntity> records = dataData.stream().map(map -> {
+                    KDataEntity entity = new KDataEntity();
+                    entity.setTime(transformDate((String) map.get("Time")));
+                    entity.setClose(new BigDecimal((String) map.get("Close")));
+                    entity.setLow(new BigDecimal((String) map.get("Low")));
+                    entity.setOpen(new BigDecimal((String) map.get("Open")));
+                    entity.setHigh(new BigDecimal((String) map.get("High")));
+                    entity.setDaily(dataDaily);
+                    entity.setCode(dataCode);
+                    entity.setDividends(new BigDecimal((String) map.get("Dividends")));
+                    Object volume = map.get("Volume");
+                    volume = volume instanceof Integer ? ((Integer) volume).longValue() : volume;
+                    entity.setVolume((Long) volume);
+                    entity.setStockSplits(new BigDecimal((String) map.get("Stock Splits")));
 
-                return entity;
-            }).toList();
+                    return entity;
+                }).toList();
 
-            records.forEach(e -> kDataMapper.insert(e));
-            redisTemplate.opsForValue().getAndDelete(RedisConfiguration.K_DATA_DAILY_PREFIX + code);
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                records.forEach(e -> kDataMapper.insert(e));
+                redisTemplate.opsForValue().getAndDelete(RedisConfiguration.K_DATA_DAILY_PREFIX + dataCode);
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+            }
         } catch (Exception noack) {
             noack.printStackTrace();
             while (true) {
                 try {
                     channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
                     break;
-                } catch (Exception retry) {
+                } catch (Exception ignoreAndRetry) {
 
                 }
             }
+        } finally {
+            ((KDataServiceImpl) kDataService).kDataQueryLock.forceUnlock();
         }
     }
 

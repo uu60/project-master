@@ -26,7 +26,7 @@ public class KDataController {
     @GetMapping("/data/daily/{code}")
     public R getMonthPeriodData(@PathVariable String code) {
         List<KDataEntity> dailyData = kDataService.getMonthPeriodDailyData(code);
-        if (dailyData.isEmpty()) {
+        if (dailyData == null || dailyData.isEmpty()) {
             return R.other(R.Codes.K_DATA_WAIT, "Please wait for update.");
         }
         return R.ok().setData(dailyData);
