@@ -12,6 +12,7 @@ import com.google.gson.reflect.TypeToken;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2023/6/13 19:14
  */
 @Service
+@Slf4j
 public class KDataServiceImpl implements KDataService {
     @Autowired
     KDataMapper kDataMapper;
@@ -62,8 +64,8 @@ public class KDataServiceImpl implements KDataService {
         } else {
             // 没有获取到锁说明已经有线程去数据库查询了，先直接返回等待
             try {
-                if (kDataQueryLock.tryLock(-1, 30, TimeUnit.SECONDS)) {
-                    queryDatabaseAndDecideIfUpdate(code);
+                if (kDataQueryLock.tryLock(-1, 30, TimeUnit.MINUTES)) {
+                    return queryDatabaseAndDecideIfUpdate(code);
                 }
             } catch (InterruptedException ignore) {
             }
@@ -72,7 +74,7 @@ public class KDataServiceImpl implements KDataService {
         }
     }
 
-    private void queryDatabaseAndDecideIfUpdate(String code) {
+    private List<KDataEntity> queryDatabaseAndDecideIfUpdate(String code) {
         // 没有再查询数据库 30天或者当天数据
         List<KDataEntity> kDataEntities =
                 kDataMapper.selectList(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).eq(KDataEntity::getDaily, KDataEntity.Const.DAILY_DAILY).orderByDesc(KDataEntity::getTime).last("limit 30"));
@@ -90,6 +92,7 @@ public class KDataServiceImpl implements KDataService {
                 notifyPythonByRabbitAsync(code, stamp / 1000);
             }
         }
+        return kDataEntities;
     }
 
     private void notifyPythonByRabbitAsync(String code, long last) {

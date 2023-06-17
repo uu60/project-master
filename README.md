@@ -185,7 +185,7 @@ ser3: display-service
 
 `ssh root@ser4 -L 3304:localhost:3306`
 
-<hr/>
+
 
 https://github.com/MicroEngine/DevilYuan
 https://github.com/bosspen1/stock
@@ -193,3 +193,19 @@ https://github.com/Gary-Hertel/StockQuant
 https://github.com/pythonstock/stock
 https://github.com/bbfamily/abu
 https://github.com/tp-yan/WebStockPredict
+
+<hr/>
+
+2023/06/17
+
+### 1 Server status
+
+Server1 (8.137.96.5):	Nginx, Gateway, Redis, RabbitMQ
+
+Server2 (8.137.98.1):	Nacos, Redis, RabbitMQ
+
+Server3 (47.109.79.121):	table(k_data_predicted), Redis, RabbitMQ
+
+Server4 (47.109.56.80):	DisplayApplication, table(k_data), Redis, RabbitMQ
+
+Server5 (16.163.97.36):	python(k_data_query_listener)
