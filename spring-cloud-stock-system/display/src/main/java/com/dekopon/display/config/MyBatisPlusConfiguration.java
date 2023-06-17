@@ -1,6 +1,5 @@
-package com.dekopon.display.configuration;
+package com.dekopon.display.config;
 
-import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 

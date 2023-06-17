@@ -15,6 +15,19 @@
           </config>
         </ContributedStateBase>
       </target>
+      <target name="root@ser4:22" type="ssh/sftp" uuid="847d1747-2bcc-48e6-84c6-0dc7d3b7354b">
+        <config>
+          <option name="projectRootOnTarget" value="/root/spring-cloud-stock-system" />
+          <option name="serverName" value="root@ser4:22 agent" />
+          <option name="useRsync" value="true" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/usr/java/jdk-17.0.7" />
+            <option name="javaVersionString" value="17.0.7" />
+          </config>
+        </ContributedStateBase>
+      </target>
     </targets>
   </component>
 </project>

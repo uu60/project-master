@@ -1,7 +1,6 @@
 package com.dekopon.display.testmq;
 
-import com.dekopon.display.configuration.RabbitConfiguration;
-import com.dekopon.display.service.impl.KDataServiceImpl;
+import com.dekopon.display.config.RabbitConfiguration;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;

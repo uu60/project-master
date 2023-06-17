@@ -1,17 +1,19 @@
 package com.dekopon.display.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.dekopon.display.configuration.RabbitConfiguration;
-import com.dekopon.display.configuration.RedisConfiguration;
+import com.dekopon.display.config.RabbitConfiguration;
+import com.dekopon.display.config.RedisConfiguration;
 import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.KDataEntity;
 import com.dekopon.display.service.KDataService;
 import com.dekopon.pojo.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -39,36 +41,59 @@ public class KDataServiceImpl implements KDataService {
     Gson gson;
     @Autowired
     ThreadPoolExecutor pool;
+    @Autowired
+    RedissonClient redisson;
+
+    public RLock kDataQueryLock;
+
+    @PostConstruct
+    private void setKDataQueryLock() {
+        kDataQueryLock = redisson.getLock("k_data_query_lock");
+    }
 
     @Override
     public List<KDataEntity> getMonthPeriodDailyData(String code) {
-
         // 先查询redis
         String data = redisTemplate.opsForValue().get(RedisConfiguration.K_DATA_DAILY_PREFIX + code);
-        List<KDataEntity> kDataEntities;
         // 有则直接返回
         if (StringUtils.hasText(data)) {
-            kDataEntities = gson.fromJson(data, new TypeToken<List<KDataEntity>>() {
+            return gson.fromJson(data, new TypeToken<List<KDataEntity>>() {
             }.getType());
         } else {
-            // 没有再查询数据库 30天或者当天数据
-            kDataEntities = kDataMapper.selectList(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode,
-                    code).eq(KDataEntity::getDaily, KDataEntity.Const.DAILY_DAILY).orderByDesc(KDataEntity::getTime).last("limit 30"));
-
-            // 如果有值，写入redis并返回
-            // TODO: 防止缓存击穿
-            if (!kDataEntities.isEmpty()) {
-                long current = System.currentTimeMillis();
-                redisTemplate.opsForValue().set(RedisConfiguration.K_DATA_DAILY_PREFIX + code,
-                        gson.toJson(kDataEntities), nextHalfHourMillis(current) - current, TimeUnit.MILLISECONDS);
+            // 没有获取到锁说明已经有线程去数据库查询了，先直接返回等待
+            try {
+                if (kDataQueryLock.tryLock(-1, 30, TimeUnit.SECONDS)) {
+                    queryDatabaseAndDecideIfUpdate(code);
+                }
+            } catch (InterruptedException ignore) {
             }
             // TODO: 附加预测数据
+            return null;
         }
-        long lastStamp = 0;
-        // 如果数据库没有数据 or 数据过期了，需要让python去查询
-        if (kDataEntities.isEmpty() || (lastStamp =
-                nextDayMillis(kDataEntities.get(kDataEntities.size() - 1).getTime().getTime())) < System.currentTimeMillis()) {
-            long finalLastStamp = lastStamp;
+    }
+
+    private void queryDatabaseAndDecideIfUpdate(String code) {
+        // 没有再查询数据库 30天或者当天数据
+        List<KDataEntity> kDataEntities =
+                kDataMapper.selectList(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).eq(KDataEntity::getDaily, KDataEntity.Const.DAILY_DAILY).orderByDesc(KDataEntity::getTime).last("limit 30"));
+        Collections.reverse(kDataEntities);
+        // 如果数据库没有数据，需要让python去查询
+        if (kDataEntities.isEmpty()) {
+            notifyPythonByRabbitAsync(code, 0);
+        } else { // 数据库有值
+            long current = System.currentTimeMillis();
+            redisTemplate.opsForValue().set(RedisConfiguration.K_DATA_DAILY_PREFIX + code,
+                    gson.toJson(kDataEntities), nextDayMillis(current) - current, TimeUnit.MILLISECONDS);
+            // 数据过期了
+            long stamp = kDataEntities.get(kDataEntities.size() - 1).getTime().getTime();
+            if (nextDayMillis(stamp) < System.currentTimeMillis()) {
+                notifyPythonByRabbitAsync(code, stamp / 1000);
+            }
+        }
+    }
+
+    private void notifyPythonByRabbitAsync(String code, long last) {
+        pool.execute(() -> {
             @AllArgsConstructor
             @Data
             class TempTO {
@@ -76,15 +101,10 @@ public class KDataServiceImpl implements KDataService {
                 long last;
                 int daily;
             }
-            pool.execute(() -> {
-                rabbitTemplate.convertAndSend("", RabbitConfiguration.K_DATA_QUERY_QUEUE_NAME,
-                        R.ok().setData(new TempTO(code, finalLastStamp / 1000, 1)));
-            });
-        }
-
-        Collections.reverse(kDataEntities);
-
-        return kDataEntities;
+            // python去查询所有数据
+            rabbitTemplate.convertAndSend("", RabbitConfiguration.K_DATA_QUERY_QUEUE_NAME,
+                    R.ok().setData(new TempTO(code, last, 1)));
+        });
     }
 
     @Override

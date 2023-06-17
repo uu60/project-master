@@ -26,7 +26,6 @@ public class KDataEntity {
     Integer id;
     String code;
     Date time;
-    Integer historical;
     Integer daily;
     BigDecimal open;
     BigDecimal high;
