@@ -5,6 +5,7 @@ import sys
 import os
 import time
 import traceback
+import pika.exceptions as pe
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utils_dir = os.path.join(current_dir, '..')
@@ -12,8 +13,8 @@ sys.path.append(utils_dir)
 
 from utils.r import R
 
-# host = '47.109.56.80'
-host = 'localhost'
+host = '47.109.56.80'
+# host = 'localhost'
 
 
 def callback(ch, method, properties, body):
@@ -63,14 +64,15 @@ def main():
             channel = connection.channel()
             channel.basic_consume(queue='k-data-query', on_message_callback=callback, auto_ack=False)
             channel.start_consuming()
-        except BaseException as e:
+        except (pe.ConnectionClosedByBroker, pe.AMQPChannelError, pe.AMQPChannelError):
             traceback.print_exc()
             if channel is not None:
                 channel.close()
             if connection is not None:
                 connection.close()
+            time.sleep(5)
+        except:
             pass
-
 
 
 if __name__ == '__main__':

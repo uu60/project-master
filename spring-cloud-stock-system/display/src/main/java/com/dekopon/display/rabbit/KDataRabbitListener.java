@@ -72,8 +72,8 @@ public class KDataRabbitListener {
 
                 records.forEach(e -> kDataMapper.insert(e));
                 redisTemplate.opsForValue().getAndDelete(RedisConfiguration.K_DATA_DAILY_PREFIX + dataCode);
-                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             }
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception noack) {
             noack.printStackTrace();
             while (true) {
