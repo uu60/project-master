@@ -12,6 +12,7 @@
     "core-js": "^3.8.3",
     "echarts": "^5.4.2",
     "element-ui": "^2.15.13",
+    "js-md5": "^0.7.3",
     "lib-flexible": "^0.3.2",
     "moment-timezone": "^0.5.43",
     "pubsub-js": "^1.9.4",

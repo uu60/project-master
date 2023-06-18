@@ -54,7 +54,7 @@ export default {
   mounted() {
     pubsub.subscribe('数据', (msgName, data) => {
       console.log("收到了数据")
-      // console.log(moment(new Date(stockdata[0].time)).format('YYYY-MM-DD HH:mm:ss'));
+      console.log(data);
       this.initData(data);
       this.initEcharts(this.stotitle, this.stodata);
     });
@@ -66,16 +66,25 @@ export default {
       this.stodata = data.data;
       console.log("初始化完成")
     },
+    macd(stockData, n) {
+      let result = []
+      let sum = 0
+      return stockData.map((item, index) => {
+        sum += item.close;
 
+        if (index < n) {
+          return ''
+        } else {
+          sum -= stockData[index - n].close
+          return (sum / n).toFixed(3)
+        }
+      });
+    },
     initEcharts(stockTitle, stockData) {
-      // var date = []
-      // for (var i = 0; i < stockData.length; i++) {
-      //   date.add(stockData[i].data)
-      // }
-      // console.log(this.title)
+
       const option = {
         title: {
-          left: '45%',
+          // left: '45%',
           text: stockTitle
         },
         tooltip: {
@@ -97,7 +106,7 @@ export default {
         dataZoom: [
           {
             show: true,
-            startValue: stockData.length - 30,
+            startValue: stockData.length - 15,
             endValue: stockData.length
           }
         ],
@@ -108,15 +117,33 @@ export default {
               return [item.open, item.close, item.low, item.high]
             })
           },
-          // {
-          //   name: 'ma5',
-          //   type: 'line',
-          //   smooth: true,
-          //   data: this.macd(data, 5),
-          //   lineStyle: {
-          //     opacity: .5
-          //   }
-          // }
+          {
+            name: 'ma2',
+            type: 'line',
+            smooth: true,
+            data: this.macd(stockData, 2),
+            lineStyle: {
+              opacity: .5
+            }
+          },
+          {
+            name: 'ma5',
+            type: 'line',
+            smooth: true,
+            data: this.macd(stockData, 5),
+            lineStyle: {
+              opacity: .5
+            }
+          },
+          {
+            name: 'ma10',
+            type: 'line',
+            smooth: true,
+            data: this.macd(stockData, 10),
+            lineStyle: {
+              opacity: .5
+            }
+          }
         ]
       };
       const myChart = echarts.init(document.getElementById("mychart"));

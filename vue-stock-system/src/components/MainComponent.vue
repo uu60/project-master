@@ -5,16 +5,16 @@
       <el-header>
         <el-row>
           <!--导航栏-->
-          <el-col span="10">
+          <el-col span="7">
             <div>
               <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-                <el-menu-item index="/Home">首页</el-menu-item>
-                <el-menu-item index="/Menu2">菜单二</el-menu-item>
+                <el-menu-item index="/MainComponent/Home">首页</el-menu-item>
+                <el-menu-item index="/MainComponent/Menu2">菜单二</el-menu-item>
               </el-menu>
             </div>
           </el-col>
           <!--搜索框-->
-          <el-col offset="5" span="9" style="padding: 15px">
+          <el-col offset="1" span="9" style="padding: 15px">
             <div>
               <el-input
                   v-model="keyword"
@@ -29,6 +29,17 @@
                 Search
               </el-button>
             </div>
+          </el-col>
+
+          <el-col span="4" offset="3">
+            <i class="el-icon-user-solid" style="font-size: 15px; margin-top: 22px;"></i>
+            <el-dropdown>
+              <span class="el-dropdown-link">{{userName}}</span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>个人信息</el-dropdown-item>
+                <el-dropdown-item divided>退出</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </el-col>
         </el-row>
       </el-header>
@@ -58,8 +69,9 @@ export default {
 
   data() {
     return {
-      activeIndex: '/Home',
-      keyword: ""
+      activeIndex: '/MainComponent/Home',
+      keyword: '',
+      userName: "未登录",
     };
   },
   methods: {
@@ -68,7 +80,9 @@ export default {
       this.$router.push(key);
     },
     search() {
-      axios.get('http://localhost:8080/stock/display/data/AAPL')
+      ///display/api/v1/data/daily/{code}
+      // console.log(this.$data.keyword)
+      axios.get(`http://localhost:8080/stock/display/api/v1/data/daily/${this.$data.keyword}`)
           .then(res => {
             // console.log(res.data)
             pubsub.publish("数据",res.data)

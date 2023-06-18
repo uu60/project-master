@@ -3,20 +3,38 @@ import MainPage from "@/pages/MainPage";
 import Menu2Page from "@/pages/Menu2Page";
 import SearchPage from "@/pages/SearchPage";
 import MainComponent from "@/components/MainComponent";
+import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
+
 const router = new VueRouter({
     routes: [
         {
-            path:'/',
-            redirect:'/SearchPage'
+            path: '/',
+            redirect: '/SearchPage'
         },
         {
-            path:'/Home',
-            component:MainPage
+            path: '/login',
+            component: LoginPage
         },
         {
-            path:'/Menu2',
-            component:Menu2Page
+            path: '/register',
+            component: RegisterPage
         },
+        {
+            path: '/MainComponent',
+            component: MainComponent,
+            children: [
+                {
+                    path: 'Home',
+                    component: MainPage
+                },
+                {
+                    path: 'Menu2',
+                    component: Menu2Page
+                },
+            ]
+        },
+
         {
             path: '/SearchPage',
             component: SearchPage
