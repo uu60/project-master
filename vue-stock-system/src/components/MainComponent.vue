@@ -34,7 +34,7 @@
           <el-col span="4" offset="3">
             <i class="el-icon-user-solid" style="font-size: 15px; margin-top: 22px;"></i>
             <el-dropdown>
-              <span class="el-dropdown-link">{{userName}}</span>
+              <span class="el-dropdown-link">{{ userName }}</span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人信息</el-dropdown-item>
                 <el-dropdown-item divided>退出</el-dropdown-item>
@@ -82,15 +82,21 @@ export default {
     search() {
       ///display/api/v1/data/daily/{code}
       // console.log(this.$data.keyword)
-      axios.get(`http://localhost:8080/stock/display/api/v1/data/daily/${this.$data.keyword}`)
-          .then(res => {
-            // console.log(res.data)
-            pubsub.publish("数据",res.data)
-            console.log("查到了数据")
-          })
-          .catch(err => {
-            console.error(err);
-          })
+      if (window.sessionStorage.getItem(this.keyword)) {
+        pubsub.publish("数据", JSON.parse(window.sessionStorage.getItem(this.keyword)) )
+      } else {
+        axios.get(`http://localhost:8080/stock/display/api/v1/data/daily/${this.$data.keyword}`)
+            .then(res => {
+              console.log(res.data)
+              pubsub.publish("数据", res.data)
+              // console.log("查到了数据")
+              window.sessionStorage.setItem(this.keyword, JSON.stringify(res.data))
+            })
+            .catch(err => {
+              console.error(err);
+            })
+      }
+
     },
   }
 }
