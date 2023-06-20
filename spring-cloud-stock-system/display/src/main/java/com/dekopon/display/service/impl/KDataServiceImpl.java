@@ -6,7 +6,7 @@ import com.dekopon.display.config.RedisConfiguration;
 import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.KDataEntity;
 import com.dekopon.display.service.KDataService;
-import com.dekopon.pojo.R;
+import com.dekopon.common.pojo.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jakarta.annotation.PostConstruct;
@@ -59,8 +59,15 @@ public class KDataServiceImpl implements KDataService {
         String data = redisTemplate.opsForValue().get(RedisConfiguration.K_DATA_DAILY_PREFIX + code);
         // 有则直接返回
         if (StringUtils.hasText(data)) {
-            return gson.fromJson(data, new TypeToken<List<KDataEntity>>() {
+            List<KDataEntity> kDataEntities = gson.fromJson(data, new TypeToken<List<KDataEntity>>() {
             }.getType());
+            try {
+                if (kDataQueryLock.tryLock(-1, 30, TimeUnit.MINUTES)) {
+                    checkExpiredAndNotifyPython(code, kDataEntities);
+                }
+            } catch (InterruptedException ignored) {
+            }
+            return kDataEntities;
         } else {
             // 没有获取到锁说明已经有线程去数据库查询了，先直接返回等待
             try {
@@ -87,12 +94,18 @@ public class KDataServiceImpl implements KDataService {
             redisTemplate.opsForValue().set(RedisConfiguration.K_DATA_DAILY_PREFIX + code,
                     gson.toJson(kDataEntities), nextDayMillis(current) - current, TimeUnit.MILLISECONDS);
             // 数据过期了
-            long stamp = kDataEntities.get(kDataEntities.size() - 1).getTime().getTime();
-            if (nextDayMillis(stamp) < System.currentTimeMillis()) {
-                notifyPythonByRabbitAsync(code, stamp / 1000);
-            }
+            checkExpiredAndNotifyPython(code, kDataEntities);
         }
         return kDataEntities;
+    }
+
+    private void checkExpiredAndNotifyPython(String code, List<KDataEntity> kDataEntities) {
+        long stamp = kDataEntities.get(kDataEntities.size() - 1).getTime().getTime();
+        if (nextDayMillis(stamp) < System.currentTimeMillis()) {
+            notifyPythonByRabbitAsync(code, stamp / 1000);
+        } else {
+            kDataQueryLock.forceUnlock();
+        }
     }
 
     private void notifyPythonByRabbitAsync(String code, long last) {
