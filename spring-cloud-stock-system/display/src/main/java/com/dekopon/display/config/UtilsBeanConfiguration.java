@@ -2,6 +2,7 @@ package com.dekopon.display.config;
 
 import com.google.gson.Gson;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -13,6 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2023/6/13 19:49
  */
 @Configuration
+@ComponentScan("com.dekopon.security.client")
 public class UtilsBeanConfiguration {
 
     @Bean

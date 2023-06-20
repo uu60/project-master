@@ -14,7 +14,7 @@ import java.util.Date;
  * @since 2023/6/13 19:05
  */
 @Data
-@TableName("k_data")
+@TableName("t_k_data")
 public class KDataEntity {
 
     public static class Const {

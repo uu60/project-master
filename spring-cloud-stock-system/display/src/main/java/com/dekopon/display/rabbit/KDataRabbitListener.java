@@ -6,7 +6,7 @@ import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.KDataEntity;
 import com.dekopon.display.service.KDataService;
 import com.dekopon.display.service.impl.KDataServiceImpl;
-import com.dekopon.pojo.R;
+import com.dekopon.common.pojo.R;
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
