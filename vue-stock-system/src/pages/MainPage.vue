@@ -14,6 +14,16 @@
 
       <!--     中容器-->
       <section class="itemCenter">
+        <!--        <el-button type="warning" icon="el-icon-star-off" circle></el-button>-->
+        <el-row>
+          <el-col span="4" offset="11">
+            <h1 style="font-size: 20px;margin-left: 10px">{{ stockName }}</h1>
+          </el-col>
+          <el-col span="2" offset="7">
+            <el-button v-bind:icon="iconData" type="warning" circle size="mini" v-if="isShow"
+                       @click="collection"></el-button>
+          </el-col>
+        </el-row>
         <div class="echart" id="mychart" style="width:100%; height: 400px;"></div>
       </section>
 
@@ -50,15 +60,28 @@ export default {
     ItemThree,
     ItemFour
   },
+  data() {
+    return {
+      stockName: '',
+      isShow: false,
+      iconData: 'el-icon-star-off'
+    }
+  },
 
   mounted() {
     pubsub.subscribe('数据', (msgName, data) => {
-      console.log("收到了数据")
+      // console.log("收到了数据")
       console.log(data);
       this.initData(data);
       this.initEcharts(this.stotitle, this.stodata);
     });
 
+    //接收check按钮信息
+    pubsub.subscribe('请显示本行内容', (msg, name) => {
+      // console.log(window.sessionStorage.getItem(name))
+      this.initData(JSON.parse(window.sessionStorage.getItem(name)))
+      this.initEcharts(this.stotitle, this.stodata);
+    });
   },
   methods: {
     initData(data) {
@@ -81,12 +104,30 @@ export default {
       });
     },
     initEcharts(stockTitle, stockData) {
+      //按钮是否可见
+      this.isShow = true
+      //判断storage中是否存了
+      if (window.sessionStorage.getItem(stockTitle + 'icon')) {
+        this.iconData = window.sessionStorage.getItem(stockTitle + 'icon')
+      } else {
+        this.iconData = 'el-icon-star-off'
+      }
+      //接收清除图表消息
+      pubsub.subscribe('clear', (msg, code) => {
+        myChart.clear()
+        this.stockName = ''
+        this.isShow = false
+      })
 
+      //定义title
+      this.stockName = stockTitle
+
+      //图表配置
       const option = {
-        title: {
-          // left: '45%',
-          text: stockTitle
-        },
+        // title: {
+        //   // left: '45%',
+        //   text: stockTitle
+        // },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -153,21 +194,20 @@ export default {
         myChart.resize();
       });
     },
-    // macd(data, n) {
-    //   let  result = []
-    //   let sum = 0
-    //
-    //   data.map((item, index)=>{
-    //     sum += item.close
-    //
-    //     if(index<n) {
-    //       return '';
-    //     } else {
-    //       sum -= data[index-n].close;
-    //       return (sum/n).toFixed(2);
-    //     }
-    //   })
-    // }
+    collection() {
+      if (this.iconData == 'el-icon-star-off') {
+        //未收藏 --> 收藏
+        this.iconData = 'el-icon-star-on'
+        window.sessionStorage.setItem(this.stotitle + 'icon', this.iconData)
+        pubsub.publish("stodata", this.stodata)
+        console.log("发布完成")
+      } else {
+        //已收藏 --> 取消收藏
+        this.iconData = 'el-icon-star-off'
+        window.sessionStorage.setItem(this.stotitle + 'icon', this.iconData)
+        pubsub.publish("取消收藏", this.stotitle)
+      }
+    },
   },
 
 }
@@ -185,6 +225,7 @@ export default {
     flex: 3;
   }
 
+
   .itemCenter {
     flex: 5;
     height: 10.5 rpx;
@@ -193,4 +234,6 @@ export default {
     margin: .25rem;
   }
 }
+
+
 </style>

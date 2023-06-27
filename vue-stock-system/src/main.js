@@ -7,9 +7,15 @@ import VueRouter from "vue-router";
 import router from "@/router";
 import 'lib-flexible/flexible.js'
 import * as echarts from "echarts";
+import store from "@/store/index";
+import axios from "axios";
+
+
+import qs from 'qs';
+Vue.prototype.$qs = qs
 
 Vue.prototype.$echarts = echarts
-
+Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
@@ -24,5 +30,6 @@ VueRouter.prototype.push = function push(location) {
 
 new Vue({
     render: h => h(App),
-    router: router
+    router: router,
+    store: store
 }).$mount('#app')

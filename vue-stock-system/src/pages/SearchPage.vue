@@ -8,8 +8,8 @@
           <el-col span="10">
             <div>
               <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-                <el-menu-item index="/Home">首页</el-menu-item>
-                <el-menu-item index="/Menu2">菜单二</el-menu-item>
+                <el-menu-item index="/Home">Home</el-menu-item>
+                <el-menu-item index="/Menu2">Menu 2</el-menu-item>
               </el-menu>
             </div>
           </el-col>
@@ -18,10 +18,10 @@
           <el-col offset="10" span="4">
             <i class="el-icon-user-solid" style="font-size: 15px; margin-top: 22px; color: gray"></i>
             <el-dropdown>
-              <span class="el-dropdown-link">{{userName}}</span>
+              <span class="el-dropdown-link">  {{ userName }}</span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人信息</el-dropdown-item>
-                <el-dropdown-item divided>退出</el-dropdown-item>
+                <el-dropdown-item divided @click.native="logout">退出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -41,7 +41,7 @@
                 @focus="focus"
                 @blur="blur"
                 @keyup.enter.native="searchHandler"
-                placeholder="搜索股票名称"
+                placeholder="search stock name"
             >
               <el-button slot="append" icon="el-icon-search" id="search" @click="searchHandler"></el-button>
             </el-input>
@@ -54,9 +54,9 @@
                 style="position:relative;z-index:15"
             >
               <dl v-if="isHistorySearch">
-                <dt class="search-title" v-show="history">历史搜索</dt>
+                <dt class="search-title" v-show="history">History search</dt>
                 <dt class="remove-history" v-show="history" @click="removeAllHistory">
-                  <i class="el-icon-delete"></i>清空历史记录
+                  <i class="el-icon-delete"></i>clear history
                 </dt>
                 <el-tag
                     v-for="search in historySearchList"
@@ -67,7 +67,7 @@
                     style="margin-right:5px; margin-bottom:5px;"
                 >{{ search.name }}
                 </el-tag>
-                <dt class="search-title">热门搜索</dt>
+                <dt class="search-title">popular searches</dt>
                 <dd v-for="search in hotSearchList" :key="search.id">{{ search }}</dd>
               </dl>
               <dl v-if="isSearchList">
@@ -92,15 +92,19 @@ export default {
     return {
       search: "", //当前输入框的值
       isFocus: false, //是否聚焦
-      hotSearchList: ["暂无热门搜索"], //热门搜索数据
+      hotSearchList: ["No popular searches yet"], //热门搜索数据
       historySearchList: [], //历史搜索数据
-      searchList: ["暂无数据"], //搜索返回数据,
+      searchList: ["No data"], //搜索返回数据,
       history: false,
       types: ["", "success", "info", "warning", "danger"], //搜索历史tag式样
-      userName: "未登录",
+      userName: this.$store.state.username,
     };
   },
   methods: {
+    logout() {
+      window.localStorage.clear();
+      this.$router.push('/login')
+    },
     focus() {
       this.isFocus = true;
       this.historySearchList =
@@ -118,16 +122,27 @@ export default {
     },
     searchHandler() {
       //发送网络请求并发布订阅
-      axios.get(`http://localhost:8080/stock/display/data/{{search}}`)
+      axios.get(`http://localhost:8080/stock/display/api/v1/data/daily/${this.$data.search}`, {
+        headers: {
+          'Authorization': localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        }
+      })
           .then(res => {
             // console.log(res.data)
-            pubsub.publish("数据",res.data)
-            console.log("查到了数据")
+            if (res.data.code == 0) {
+              pubsub.publish("数据", res.data)
+              window.sessionStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
+              console.log("查到了数据")
+            } else if (res.data.code == 1) {
+              this.$message.error("The data has not been queried, please wait patiently before querying");
+            } else {
+              this.$message.error(this.$store.state.serverErrMsg);
+            }
           })
           .catch(err => {
             console.error(err);
           })
-
 
       //页面跳转
       this.$router.push('/MainComponent/Home')
@@ -203,10 +218,12 @@ export default {
   margin-top: 0px;
   padding-bottom: 20px;
 }
+
 .el-dropdown-link {
   cursor: pointer;
   color: #409EFF;
 }
+
 .el-icon-arrow-down {
   font-size: 12px;
 }

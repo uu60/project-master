@@ -8,8 +8,8 @@
           <el-col span="7">
             <div>
               <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-                <el-menu-item index="/MainComponent/Home">首页</el-menu-item>
-                <el-menu-item index="/MainComponent/Menu2">菜单二</el-menu-item>
+                <el-menu-item index="/MainComponent/Home">Home</el-menu-item>
+                <el-menu-item index="/MainComponent/Menu2">Menu 2</el-menu-item>
               </el-menu>
             </div>
           </el-col>
@@ -37,7 +37,7 @@
               <span class="el-dropdown-link">{{ userName }}</span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人信息</el-dropdown-item>
-                <el-dropdown-item divided>退出</el-dropdown-item>
+                <el-dropdown-item divided @click.native="logout">退出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -63,7 +63,7 @@ export default {
   props: {
     placeholder: {
       type: String,
-      default: '请输入进行搜索'
+      default: 'Please enter to search'
     }
   },
 
@@ -71,7 +71,7 @@ export default {
     return {
       activeIndex: '/MainComponent/Home',
       keyword: '',
-      userName: "未登录",
+      userName: this.$store.state.username,
     };
   },
   methods: {
@@ -85,12 +85,27 @@ export default {
       if (window.sessionStorage.getItem(this.keyword)) {
         pubsub.publish("数据", JSON.parse(window.sessionStorage.getItem(this.keyword)) )
       } else {
-        axios.get(`http://localhost:8080/stock/display/api/v1/data/daily/${this.$data.keyword}`)
+        axios.get(`http://localhost:8080/stock/display/api/v1/data/daily/${this.$data.keyword}`, {
+          headers: {
+            // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+            'Authorization': localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          }
+        })
             .then(res => {
               console.log(res.data)
-              pubsub.publish("数据", res.data)
-              // console.log("查到了数据")
-              window.sessionStorage.setItem(this.keyword, JSON.stringify(res.data))
+              if (res.data.code == 0) {
+                pubsub.publish("数据", res.data)
+                // console.log("查到了数据",res.data)
+                // console.log(res.data.data[0].code)
+                window.sessionStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
+
+              } else if (res.data.code == 1) {
+                this.$message.error("The data has not been queried, please wait patiently before querying");
+                pubsub.publish("clear", res.data.code)
+              } else {
+                this.$message.error(this.$store.state.serverErrMsg);
+              }
             })
             .catch(err => {
               console.error(err);
@@ -98,6 +113,10 @@ export default {
       }
 
     },
+    logout() {
+      window.localStorage.clear();
+      this.$router.push('/login')
+    }
   }
 }
 </script>

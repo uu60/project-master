@@ -15,8 +15,8 @@ export default {
 <style scoped lang="less">
   .item{
     height: 5.125rem;
-    border: blue;
+    border: 1px solid blue;
     margin: .25rem;
-    background-color: rgba(12, 130, 255, .85);
+    //background-color: rgba(12, 130, 255, .85);
   }
 </style>
