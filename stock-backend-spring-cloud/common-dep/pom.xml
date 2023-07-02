@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.dekopon</groupId>
-        <artifactId>spring-cloud-stock-system</artifactId>
+        <artifactId>stock-backend-spring-cloud</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>common-dep</artifactId>
-    <name>common</name>
+    <name>common-dep</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
