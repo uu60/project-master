@@ -22,6 +22,7 @@
 
 <script>
 import pubsub from "pubsub-js";
+import axios from "axios";
 
 export default {
   name: "itemThree",
@@ -43,7 +44,7 @@ export default {
       this.tableData.push({
         stockName: stodata[0].code,
         open: (stodata[29].open).toFixed(2),
-        zhengfu: (stodata[29].open - stodata[28].open).toFixed(2)
+        zhengfu: (stodata[29].close - stodata[29].open).toFixed(2)
       })
     });
 
@@ -51,8 +52,31 @@ export default {
     pubsub.subscribe("取消收藏", (msgName, stotitle) => {
       // console.log("接收到取消收藏", stotitle)
       let objstock = this.tableData.find(o => o.stockName === stotitle)
+      // console.log(objstock)
       this.removeObjWithArr(this.tableData, objstock)
+    });
+
+    //获取收藏列表信息
+    axios.get('http://localhost:8080/collectionList/display/api/v1/collect/list', {
+      headers: {
+        'Authorization': localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      }
     })
+        .then(res => {
+          // console.log("收藏列表信息", res.data)
+          for (var i = 0; i < res.data.data.length; i++){
+            this.tableData.push({
+              stockName: res.data.data[i].code,
+              open: res.data.data[i].openPrice.toFixed(2),
+              zhengfu: (res.data.data[i].closePrice - res.data.data[i].openPrice).toFixed(2)
+            })
+            window.sessionStorage.setItem(res.data.data[i].code + 'icon', 'el-icon-star-on')
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        })
   },
   methods: {
     //点击check查看图表
@@ -61,8 +85,23 @@ export default {
       pubsub.publish("请显示本行内容", row.stockName)
     },
     //点击delete
-    handleDelete(row){
+    handleDelete(row) {
       console.log(row)
+      axios.delete(`http://localhost:8080/deleteItem/display/api/v1/collect/${row.stockName}`, {
+        headers: {
+          'Authorization': localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        }
+      }).then(res => {
+        // console.log(res.data)
+        if (res.data.code == 0) {
+          this.removeObjWithArr(this.tableData, row)
+          pubsub.publish("取消收藏图标按钮", row)
+        }
+      }).catch(err => {
+        console.error(err);
+      })
+
     },
     //判断对象是否相等
     isObjectValueEqual(a, b) {

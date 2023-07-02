@@ -33,6 +33,27 @@ module.exports = {
                 pathRewrite: {'^/denglu': ''},
                 ws: true,
                 changeOrigin: true
+            },
+            '/collectionList': {
+                target: 'http://8.137.96.5:80',
+                secure: false,
+                pathRewrite: {'^/collectionList': ''},
+                ws: true,
+                changeOrigin: true
+            },
+            '/deleteItem': {
+                target: 'http://8.137.96.5:80',
+                secure: false,
+                pathRewrite: {'^/deleteItem': ''},
+                ws: true,
+                changeOrigin: true
+            },
+            '/collectionCheck': {
+                target: 'http://8.137.96.5:80',
+                secure: false,
+                pathRewrite: {'^/collectionCheck': ''},
+                ws: true,
+                changeOrigin: true
             }
         }
     },

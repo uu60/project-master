@@ -133,7 +133,7 @@ export default {
             if (res.data.code == 0) {
               pubsub.publish("数据", res.data)
               window.sessionStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
-              console.log("查到了数据")
+              // console.log("查到了数据")
             } else if (res.data.code == 1) {
               this.$message.error("The data has not been queried, please wait patiently before querying");
             } else {
@@ -183,6 +183,18 @@ export default {
     isSearch() {
       return this.isFocus;
     }
+  },
+  mounted() {
+    axios.get('http://localhost:8080/collectionList/display/api/v1/collect/list', {
+      headers: {
+        'Authorization': localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      }
+    }).then(res=>{
+      for (var i = 0; i < res.data.data.length; i++) {
+        window.sessionStorage.setItem(res.data.data[i].code + 'icon', 'el-icon-star-on')
+      }
+    })
   }
 };
 </script>

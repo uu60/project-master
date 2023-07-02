@@ -49,6 +49,7 @@ import ItemThree from "@/components/itemThree";
 import ItemFour from "@/components/itemFour";
 import pubsub from 'pubsub-js'
 import moment from 'moment'
+import axios from "axios";
 
 export default {
   name: "MainPage",
@@ -82,6 +83,14 @@ export default {
       this.initData(JSON.parse(window.sessionStorage.getItem(name)))
       this.initEcharts(this.stotitle, this.stodata);
     });
+
+    pubsub.subscribe("取消收藏图标按钮", (msgName, data) => {
+      // console.log("取消收藏图标按钮回调",data.stockName)
+      window.sessionStorage.setItem(data.stockName + 'icon', 'el-icon-star-off')
+      if (data.stockName === this.stockName) {
+        this.iconData = 'el-icon-star-off'
+      }
+    });
   },
   methods: {
     initData(data) {
@@ -106,10 +115,15 @@ export default {
     initEcharts(stockTitle, stockData) {
       //按钮是否可见
       this.isShow = true
+      // console.log("判断了", stockTitle)
       //判断storage中是否存了
-      if (window.sessionStorage.getItem(stockTitle + 'icon')) {
+      var x = stockTitle + 'icon'
+      // console.log("fanhui",window.sessionStorage.getItem(x))
+      if (window.sessionStorage.getItem(x)) {
         this.iconData = window.sessionStorage.getItem(stockTitle + 'icon')
+        console.log("图标",this.iconData)
       } else {
+        console.log("没有图标")
         this.iconData = 'el-icon-star-off'
       }
       //接收清除图表消息
@@ -184,7 +198,7 @@ export default {
             lineStyle: {
               opacity: .5
             }
-          }
+          },
         ]
       };
       const myChart = echarts.init(document.getElementById("mychart"));
@@ -197,15 +211,40 @@ export default {
     collection() {
       if (this.iconData == 'el-icon-star-off') {
         //未收藏 --> 收藏
-        this.iconData = 'el-icon-star-on'
-        window.sessionStorage.setItem(this.stotitle + 'icon', this.iconData)
-        pubsub.publish("stodata", this.stodata)
-        console.log("发布完成")
+        axios.post(`http://localhost:8080/collectionCheck/display/api/v1/collect/${this.stockName}`, {}, {
+          headers: {
+            'Authorization': localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          }
+        }).then(res => {
+          // console.log("收藏回调",res.data)
+          if (res.data.code == 0 || res.data.code == 1) {
+            this.iconData = 'el-icon-star-on'
+            window.sessionStorage.setItem(this.stotitle + 'icon', this.iconData)
+            pubsub.publish("stodata", this.stodata)
+            console.log("发布完成")
+          }
+        }).catch(err => {
+          console.error(err);
+        })
       } else {
         //已收藏 --> 取消收藏
-        this.iconData = 'el-icon-star-off'
-        window.sessionStorage.setItem(this.stotitle + 'icon', this.iconData)
-        pubsub.publish("取消收藏", this.stotitle)
+        axios.delete(`http://localhost:8080/deleteItem/display/api/v1/collect/${this.stockName}`, {
+          headers: {
+            'Authorization': localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          }
+        }).then(res => {
+          if (res.data.code == 0) {
+            this.iconData = 'el-icon-star-off'
+            window.sessionStorage.setItem(this.stotitle + 'icon', this.iconData)
+            pubsub.publish("取消收藏", this.stotitle)
+          }
+        }).catch(err => {
+          console.error(err);
+        })
+
+
       }
     },
   },
