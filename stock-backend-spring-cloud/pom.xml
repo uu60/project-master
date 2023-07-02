@@ -8,9 +8,9 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.dekopon</groupId>
-  <artifactId>spring-cloud-stock-system</artifactId>
+  <artifactId>stock-backend-spring-cloud</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>Archetype - spring-cloud-stock-system</name>
+  <name>stock-backend-spring-cloud</name>
   <url>http://maven.apache.org</url>
   <packaging>pom</packaging>
 

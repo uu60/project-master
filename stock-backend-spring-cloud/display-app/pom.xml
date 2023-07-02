@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.dekopon</groupId>
-        <artifactId>spring-cloud-stock-system</artifactId>
+        <artifactId>stock-backend-spring-cloud</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>display-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>display</name>
+    <name>display-app</name>
     <description>chart</description>
     <properties>
         <java.version>17</java.version>
