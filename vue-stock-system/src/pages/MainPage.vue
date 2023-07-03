@@ -80,8 +80,12 @@ export default {
     //接收check按钮信息
     pubsub.subscribe('请显示本行内容', (msg, name) => {
       // console.log(window.sessionStorage.getItem(name))
-      this.initData(JSON.parse(window.sessionStorage.getItem(name)))
-      this.initEcharts(this.stotitle, this.stodata);
+      if (window.sessionStorage.getItem(name)) {
+        this.initData(JSON.parse(window.sessionStorage.getItem(name)))
+        this.initEcharts(this.stotitle, this.stodata);
+      } else {
+        alert("请在搜索框中查询")
+      }
     });
 
     pubsub.subscribe("取消收藏图标按钮", (msgName, data) => {
