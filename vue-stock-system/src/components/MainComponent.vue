@@ -85,7 +85,7 @@ export default {
       if (window.sessionStorage.getItem(this.keyword)) {
         pubsub.publish("数据", JSON.parse(window.sessionStorage.getItem(this.keyword)) )
       } else {
-        axios.get(`http://localhost:8080/stock/display/api/v1/data/daily/${this.$data.keyword}`, {
+        axios.get(`/api/display/api/v1/data/daily/${this.$data.keyword}`, {
           headers: {
             // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
             'Authorization': localStorage.getItem('token'),

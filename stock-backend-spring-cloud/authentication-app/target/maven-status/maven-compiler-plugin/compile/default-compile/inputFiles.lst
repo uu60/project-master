@@ -1,0 +1,11 @@
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/vo/AccountUserDetails.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/filter/JwtGeneratorAuthenticationFilter.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/entity/AccountEntity.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/service/AccountService.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/config/UtilsBeanConfig.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/vo/UsernamePasswordVO.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/AuthenticationApplication.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/controller/AccountController.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/config/SecurityAuthConfig.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/mapper/AccountMapper.java
+/Users/dujianzhang/IdeaProjects/project-master/spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/service/impl/AccountServiceImpl.java

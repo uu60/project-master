@@ -122,7 +122,7 @@ export default {
     },
     searchHandler() {
       //发送网络请求并发布订阅
-      axios.get(`http://localhost:8080/stock/display/api/v1/data/daily/${this.$data.search}`, {
+      axios.get(`/api/display/api/v1/data/daily/${this.$data.search}`, {
         headers: {
           'Authorization': localStorage.getItem('token'),
           'Content-Type': 'application/json'
@@ -185,7 +185,7 @@ export default {
     }
   },
   mounted() {
-    axios.get('http://localhost:8080/collectionList/display/api/v1/collect/list', {
+    axios.get('/api/display/api/v1/collect/list', {
       headers: {
         'Authorization': localStorage.getItem('token'),
         'Content-Type': 'application/json'

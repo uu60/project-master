@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="60b2c01a-cbc3-4483-b642-35298b4815f9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/auth/StockUserDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/auth/StockUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rabbit/k_data_query_listener.py" beforeDir="false" afterPath="$PROJECT_DIR$/rabbit/k_data_query_listener.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spring-cloud-stock-system/authentication/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../spring-cloud-stock-system/authentication/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../spring-cloud-stock-system/authentication/src/main/java/com/dekopon/authentication/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spring-cloud-stock-system/display/src/main/java/com/dekopon/display/rabbit/KDataRabbitListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../spring-cloud-stock-system/display/src/main/java/com/dekopon/display/rabbit/KDataRabbitListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spring-cloud-stock-system/display/src/main/java/com/dekopon/display/service/impl/KDataServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../spring-cloud-stock-system/display/src/main/java/com/dekopon/display/service/impl/KDataServiceImpl.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file:///usr/local/anaconda3/envs/py37/lib/python3.7/json/decoder.py" root0="SKIP_INSPECTION" />
+    <setting file="file:///usr/local/anaconda3/envs/py37/lib/python3.7/json/encoder.py" root0="SKIP_INSPECTION" />
+    <setting file="file:///usr/local/anaconda3/envs/py37/lib/python3.7/site-packages/pandas/core/generic.py" root0="SKIP_INSPECTION" />
+    <setting file="file:///usr/local/anaconda3/envs/py37/lib/python3.7/site-packages/pika/adapters/blocking_connection.py" root0="SKIP_INSPECTION" />
+    <setting file="file:///usr/local/anaconda3/envs/py37/lib/python3.7/site-packages/yfinance/utils.py" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectId" id="2R6tEVtWDUExkXRAVqnDjj2JZo6" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "back",
+    "last_opened_file_path": "/Users/dujianzhang/IdeaProjects/project-master/python-stock-system",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="k_data_query_listener" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="python-stock-system" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/rabbit" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/rabbit/k_data_query_listener.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.k_data_query_listener" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="60b2c01a-cbc3-4483-b642-35298b4815f9" name="Changes" comment="" />
+      <created>1686582247097</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1686582247097</updated>
+      <workItem from="1686582248103" duration="1728000" />
+      <workItem from="1686666838662" duration="672000" />
+      <workItem from="1686676544498" duration="15416000" />
+      <workItem from="1686924270473" duration="24238000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/flask_stock_system$decoder.coverage" NAME="decoder Coverage Results" MODIFIED="1686677669655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/usr/local/anaconda3/envs/py37/lib/python3.7/json" />
+    <SUITE FILE_PATH="coverage/python_stock_system$k_data_query_listener.coverage" NAME="k_data_query_listener Coverage Results" MODIFIED="1687012042423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/rabbit" />
+    <SUITE FILE_PATH="coverage/flask_stock_system$test.coverage" NAME="test Coverage Results" MODIFIED="1686586661547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/flask_stock_system$k_data_query_listener.coverage" NAME="k_data_query_listener Coverage Results" MODIFIED="1686709267109" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/rabbit" />
+  </component>
+</project>

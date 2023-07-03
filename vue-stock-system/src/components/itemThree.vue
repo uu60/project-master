@@ -57,7 +57,7 @@ export default {
     });
 
     //获取收藏列表信息
-    axios.get('http://localhost:8080/collectionList/display/api/v1/collect/list', {
+    axios.get('/api/display/api/v1/collect/list', {
       headers: {
         'Authorization': localStorage.getItem('token'),
         'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ export default {
     //点击delete
     handleDelete(row) {
       console.log(row)
-      axios.delete(`http://localhost:8080/deleteItem/display/api/v1/collect/${row.stockName}`, {
+      axios.delete(`/api/display/api/v1/collect/${row.stockName}`, {
         headers: {
           'Authorization': localStorage.getItem('token'),
           'Content-Type': 'application/json'

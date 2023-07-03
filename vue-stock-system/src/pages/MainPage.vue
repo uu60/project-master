@@ -215,7 +215,7 @@ export default {
     collection() {
       if (this.iconData == 'el-icon-star-off') {
         //未收藏 --> 收藏
-        axios.post(`http://localhost:8080/collectionCheck/display/api/v1/collect/${this.stockName}`, {}, {
+        axios.post(`/api/display/api/v1/collect/${this.stockName}`, {}, {
           headers: {
             'Authorization': localStorage.getItem('token'),
             'Content-Type': 'application/json'
@@ -233,7 +233,7 @@ export default {
         })
       } else {
         //已收藏 --> 取消收藏
-        axios.delete(`http://localhost:8080/deleteItem/display/api/v1/collect/${this.stockName}`, {
+        axios.delete(`/api/display/api/v1/collect/${this.stockName}`, {
           headers: {
             'Authorization': localStorage.getItem('token'),
             'Content-Type': 'application/json'

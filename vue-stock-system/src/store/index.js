@@ -6,7 +6,6 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         projectName: "StockForcast",
-        backendAddress: "http://8.137.96.5:80",
         token: localStorage.getItem("token") ? localStorage.getItem("token") : "",
         username: localStorage.getItem("username")
             ? localStorage.getItem("username")

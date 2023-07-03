@@ -105,7 +105,7 @@ export default {
             });
             return;
           }
-          axios.post('http://localhost:8080/denglu/auth/api/v1/login', JSON.stringify({
+          axios.post('/api/auth/api/v1/login', JSON.stringify({
             username: this.form.username,
             password: this.form.password,
           }, {
@@ -145,7 +145,7 @@ export default {
       this.registering = true;
       this.$refs["form1"].validate((valid) => {
         if (valid) {
-          axios.post('http://localhost:8080/registe/auth/api/v1/register', JSON.stringify({
+          axios.post('/api/auth/api/v1/register', JSON.stringify({
             username: this.form1.username,
             password: this.form1.password,
           }), {
