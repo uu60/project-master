@@ -8,6 +8,7 @@ import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.CollectionEntity;
 import com.dekopon.display.entity.KDataEntity;
 import com.dekopon.display.service.CollectionService;
+import com.dekopon.display.utils.DateUtils;
 import com.dekopon.display.vo.collection.CollectionListItemVO;
 import com.google.gson.Gson;
 import jakarta.annotation.PostConstruct;
@@ -90,7 +91,7 @@ public class CollectionServiceImpl implements CollectionService {
         Map<String, KDataEntity> latestClosePriceMap = new HashMap<>();
         codes.forEach(code -> {
             KDataEntity kDataEntity;
-            for (;;) {
+            for (; ; ) {
                 String latestEntityStr =
                         stringRedisTemplate.opsForValue().get(RedisConfiguration.K_DATA_LATEST_PREFIX + code);
                 if (StringUtils.hasText(latestEntityStr)) {
@@ -101,12 +102,12 @@ public class CollectionServiceImpl implements CollectionService {
                     // redis中没有需要去查库
                     // 加锁查库
                     try {
-                        if (!latestKDataQueryLock.tryLock(-1, 30, TimeUnit.MINUTES)) {
+                        if (!latestKDataQueryLock.tryLock(-1, 10 * 60, TimeUnit.SECONDS)) {
                             // 获取锁失败，已经有查库线程
                             continue;
                         }
-                    } catch (InterruptedException ignore) {
-
+                    } catch (InterruptedException e) {
+                        continue;
                     }
                     // 获取到锁了
                     try {
@@ -114,7 +115,7 @@ public class CollectionServiceImpl implements CollectionService {
                                 kDataMapper.selectOne(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).orderByDesc(KDataEntity::getTime).last("limit 1"));
                         if (kDataEntity != null) {
                             latestClosePriceMap.put(code, kDataEntity);
-                            stringRedisTemplate.opsForValue().set(RedisConfiguration.K_DATA_LATEST_PREFIX + code, gson.toJson(kDataEntity));
+                            stringRedisTemplate.opsForValue().set(RedisConfiguration.K_DATA_LATEST_PREFIX + code, gson.toJson(kDataEntity), DateUtils.nextDayMillis(System.currentTimeMillis()) - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
                         }
                         break;
                     } finally {
