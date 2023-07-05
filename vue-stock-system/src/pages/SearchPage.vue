@@ -103,7 +103,9 @@ export default {
   methods: {
     logout() {
       window.localStorage.clear();
-      this.$router.push('/login')
+      // location.reload()
+      // this.$router.push('/login')
+      window.location = "/"
     },
     focus() {
       this.isFocus = true;

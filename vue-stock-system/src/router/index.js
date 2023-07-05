@@ -18,28 +18,46 @@ const router = new VueRouter({
         },
         {
             path: '/register',
+            meta:{isLogin:true},
             component: RegisterPage
         },
         {
             path: '/MainComponent',
+            meta:{isLogin:true},
             component: MainComponent,
             children: [
                 {
                     path: 'Home',
+                    meta:{isLogin:true},
                     component: MainPage
                 },
                 {
                     path: 'Menu2',
+                    meta:{isLogin:true},
                     component: Menu2Page
                 },
             ]
         },
-
         {
             path: '/SearchPage',
+            meta:{isLogin:true},
             component: SearchPage
         }
     ]
 })
+router.beforeEach((to,from,next)=>{
+    if(to.matched.some(res=>res.meta.isLogin)){//判断是否需要登录
+        if (localStorage['token']) {
+            next();
+        }else{
+            next({
+                path:"/login"
+            });
+        }
+    }else{
+        next()
+    }
+});
+
 
 export default router

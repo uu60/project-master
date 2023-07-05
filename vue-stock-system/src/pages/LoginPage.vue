@@ -36,7 +36,7 @@
         </div>
       </el-main>
     </el-container>
-    <el-dialog title="Account Registraion" :visible.sync="dialogFormVisible" width="500px">
+    <el-dialog title="Account Registration" :visible.sync="dialogFormVisible" width="500px">
       <el-form
           ref="form1"
           :model="form1"
@@ -100,9 +100,7 @@ export default {
           this.loginning = true;
           if (this.$store.state.token) {
             // console.log("forbidden relogin.");
-            this.$router.push({
-              name: "SearchPage",
-            });
+            this.$router.push("/SearchPage");
             return;
           }
           axios.post('/api/auth/api/v1/login', JSON.stringify({

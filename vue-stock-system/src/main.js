@@ -20,6 +20,24 @@ Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(VueRouter)
+axios.interceptors.response.use(
+    (response) => {
+        if (response.data.code === 400) {
+            window.localStorage.clear();
+            window.location = "/";
+        }
+        return response;
+    },
+    (error) => {
+        if (error.response.status === 403) {
+            window.localStorage.clear();
+            window.location = "/";
+            return;
+        }
+        // 默认除了2XX之外都为错误
+        // TODO: 弹窗提示
+    }
+);
 
 const originalPush = VueRouter.prototype.push
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table :data="tableData" style="width: 353.338px;  font-size: 5px;">
+    <el-table :data="tableData" height="321.10px" style="width: 353.338px;  font-size: 5px;">
       <div slot="empty" style="text-align: center">
         <el-empty description="no records" image-size="108"/>
       </div>

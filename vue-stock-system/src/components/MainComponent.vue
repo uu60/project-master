@@ -83,7 +83,7 @@ export default {
       ///display/api/v1/data/daily/{code}
       // console.log(this.$data.keyword)
       if (window.sessionStorage.getItem(this.keyword)) {
-        pubsub.publish("数据", JSON.parse(window.sessionStorage.getItem(this.keyword)) )
+        pubsub.publish("数据", JSON.parse(window.sessionStorage.getItem(this.keyword)))
       } else {
         axios.get(`/api/display/api/v1/data/daily/${this.$data.keyword}`, {
           headers: {
@@ -115,7 +115,11 @@ export default {
     },
     logout() {
       window.localStorage.clear();
-      this.$router.push('/login')
+      // location.reload()
+      // this.$router.push('/login')
+      window.location = "/"
+
+
     }
   }
 }
