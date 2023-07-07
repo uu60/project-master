@@ -10,12 +10,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="display-app" />
+        <module name="authentication-app" />
+        <module name="gateway-app" />
+        <module name="prediction-app" />
+        <module name="common-dep" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="authentication-service" target="1.5" />
-      <module name="test-spring-security" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -24,7 +25,6 @@
       <module name="display-app" options="-parameters" />
       <module name="gateway-app" options="-parameters" />
       <module name="prediction-app" options="-parameters" />
-      <module name="test-spring-security" options="" />
     </option>
   </component>
 </project>

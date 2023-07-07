@@ -6,7 +6,6 @@ import com.dekopon.display.service.CollectionService;
 import com.dekopon.display.utils.SecurityUtils;
 import com.dekopon.display.vo.collection.CollectionListItemVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,6 +44,6 @@ public class CollectionController {
     public R list() {
         String username = SecurityUtils.getCurrentUsername();
         List<CollectionListItemVO> vos = collectionService.list(username);
-        return R.ok().setData(vos);
+        return R.ok().data(vos);
     }
 }
