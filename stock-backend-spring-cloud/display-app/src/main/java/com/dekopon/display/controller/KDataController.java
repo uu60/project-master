@@ -29,7 +29,7 @@ public class KDataController {
         if (dailyData == null || dailyData.isEmpty()) {
             return R.e(R.Codes.K_DATA_WAIT, "Please wait for update.");
         }
-        return R.ok().setData(dailyData);
+        return R.ok().data(dailyData);
     }
 
     @GetMapping("/data/today/{code}")

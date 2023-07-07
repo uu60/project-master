@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: prediction
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 8.137.98.1:8848
+        ip: 47.109.79.121
+      config:
+        server-addr: 8.137.98.1:8848
+        namespace: 8aecdca5-460e-4adb-ab53-b1c1c26300f3
+        file-extension: yaml

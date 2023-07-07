@@ -120,7 +120,7 @@ public class KDataServiceImpl implements KDataService {
             }
             // python去查询所有数据
             rabbitTemplate.convertAndSend("", RabbitConfiguration.K_DATA_QUERY_QUEUE_NAME,
-                    R.ok().setData(new TempTO(code, last, 1)));
+                    R.ok().data(new TempTO(code, last, 1)));
         });
     }
 

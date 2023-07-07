@@ -1,12 +1,13 @@
 package com.dekopon.common.pojo;
 
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author dekopon
  * @since 2023/6/13 18:54
  */
-@Data
+@Getter
 public class R {
     private Integer code = 0;
     private String msg;
@@ -37,7 +38,7 @@ public class R {
         return R;
     }
 
-    public R setData(Object data) {
+    public R data(Object data) {
         this.data = data;
         return this;
     }
@@ -52,5 +53,7 @@ public class R {
         public static final int USERNAME_EXISTED = 1;
         public static final int USERNAME_OR_PASSWORD_WRONG_FORMAT = 2;
         public static final int USERNAME_OR_PASSWORD_INVALID = 3;
+
+        public static final int DATE_WRONG_FORMAT = 1;
     }
 }
