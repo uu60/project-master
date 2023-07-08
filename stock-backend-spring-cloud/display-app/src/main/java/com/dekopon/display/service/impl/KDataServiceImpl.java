@@ -1,12 +1,14 @@
 package com.dekopon.display.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.dekopon.common.exception.RException;
 import com.dekopon.display.config.RabbitConfiguration;
 import com.dekopon.display.config.RedisConfiguration;
 import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.KDataEntity;
 import com.dekopon.display.service.KDataService;
 import com.dekopon.common.pojo.R;
+import com.dekopon.display.utils.DateUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jakarta.annotation.PostConstruct;
@@ -83,6 +85,7 @@ public class KDataServiceImpl implements KDataService {
     }
 
     private List<KDataEntity> queryDatabaseAndDecideIfUpdate(String code) {
+        code = code.toUpperCase();
         // 没有再查询数据库 30天或者当天数据
         List<KDataEntity> kDataEntities =
                 kDataMapper.selectList(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).eq(KDataEntity::getDaily, KDataEntity.Const.DAILY_DAILY).orderByDesc(KDataEntity::getTime).last("limit 30"));
@@ -101,6 +104,7 @@ public class KDataServiceImpl implements KDataService {
     }
 
     private void checkExpiredAndNotifyPython(String code, List<KDataEntity> kDataEntities) {
+        code = code.toUpperCase();
         long stamp = kDataEntities.get(kDataEntities.size() - 1).getTime().getTime();
         if (nextDayMillis(stamp) < System.currentTimeMillis()) {
             notifyPythonByRabbitAsync(code, stamp / 1000);
@@ -110,6 +114,8 @@ public class KDataServiceImpl implements KDataService {
     }
 
     private void notifyPythonByRabbitAsync(String code, long last) {
+        code = code.toUpperCase();
+        String finalCode = code;
         pool.execute(() -> {
             @AllArgsConstructor
             @Data
@@ -120,14 +126,24 @@ public class KDataServiceImpl implements KDataService {
             }
             // python去查询所有数据
             rabbitTemplate.convertAndSend("", RabbitConfiguration.K_DATA_QUERY_QUEUE_NAME,
-                    R.ok().data(new TempTO(code, last, 1)));
+                    R.ok().data(new TempTO(finalCode, last, 1)));
         });
     }
 
     @Override
     public KDataEntity getLatestKData(String code) {
+        code = code.toUpperCase();
         // 获取加载过的最新的记录
         return kDataMapper.selectOne(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).orderByDesc(KDataEntity::getTime).last("limit 1"));
+    }
+
+    @Override
+    public List<KDataEntity> getSpecificPeriodDailyData(String code, String fromDate, String toDate) {
+        if ((StringUtils.hasText(fromDate) && !DateUtils.isISOFormat(fromDate)) || (StringUtils.hasText(toDate) && !DateUtils.isISOFormat(toDate))) {
+            throw new RException(R.Codes.DATE_WRONG_FORMAT, "Wrong time format.");
+        }
+        code = code.toUpperCase();
+        return kDataMapper.selectList(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).apply(StringUtils.hasText(fromDate), "date(time) >= date({0})", fromDate).apply(StringUtils.hasText(toDate), "date(time) <= date({0})", toDate));
     }
 
     private long nextHalfHourMillis(long timeStamp) {
