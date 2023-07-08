@@ -12,4 +12,6 @@ public interface KDataService {
     List<KDataEntity> getMonthPeriodDailyData(String code);
 
     KDataEntity getLatestKData(String code);
+
+    List<KDataEntity> getSpecificPeriodDailyData(String code, String fromDate, String toDate);
 }
