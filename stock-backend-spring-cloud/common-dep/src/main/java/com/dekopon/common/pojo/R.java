@@ -1,59 +1,41 @@
 package com.dekopon.common.pojo;
 
-import lombok.Data;
 import lombok.Getter;
 
-/**
- * @author dekopon
- * @since 2023/6/13 18:54
- */
 @Getter
-public class R {
-    private Integer code = 0;
-    private String msg;
-    private Object data;
+public class R<T> {
+    public Integer code;
+    public String msg;
+    public T data;
 
-    public static R ok() {
-        R R = new R();
-        R.msg = "success";
-        return R;
+
+    public static <U> R<U> ok() {
+        R<U> r = new R<>();
+        r.msg = "success";
+        return r;
     }
 
-    public static R ok(String msg) {
-        R R = new R();
-        R.msg = msg;
-        return R;
+    public static <U> R<U> ok(String msg) {
+        R<U> r = new R<>();
+        r.msg = msg;
+        return r;
     }
 
-    public static R e(int code) {
-        R R = new R();
-        R.code = code;
-        return R;
+    public static <U> R<U> e(int code) {
+        R<U> r = new R<>();
+        r.code = code;
+        return r;
     }
 
-    public static R e(int code, String msg) {
-        R R = new R();
-        R.code = code;
-        R.msg = msg;
-        return R;
+    public static <U> R<U> e(int code, String msg) {
+        R<U> r = new R<>();
+        r.code = code;
+        r.msg = msg;
+        return r;
     }
 
-    public R data(Object data) {
+    public R<T> data(T data) {
         this.data = data;
         return this;
-    }
-    
-    public static class Codes {
-        public static final int SUCCESS = 0;
-        public static final int SERVER_INTERNAL_ERROR = -1;
-
-        public static final int K_DATA_WAIT = 1;
-
-        public static final int INVALID_TOKEN = 400;
-        public static final int USERNAME_EXISTED = 1;
-        public static final int USERNAME_OR_PASSWORD_WRONG_FORMAT = 2;
-        public static final int USERNAME_OR_PASSWORD_INVALID = 3;
-
-        public static final int DATE_WRONG_FORMAT = 1;
     }
 }

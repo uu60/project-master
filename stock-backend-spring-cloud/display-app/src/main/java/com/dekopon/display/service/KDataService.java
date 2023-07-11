@@ -9,7 +9,7 @@ import java.util.List;
  * @since 2023/6/13 19:14
  */
 public interface KDataService {
-    List<KDataEntity> getMonthPeriodDailyData(String code);
+    KDataEntity update(String code);
 
     KDataEntity getLatestKData(String code);
 

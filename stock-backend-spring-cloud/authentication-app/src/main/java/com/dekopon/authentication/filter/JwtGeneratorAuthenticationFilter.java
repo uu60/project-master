@@ -1,7 +1,7 @@
 package com.dekopon.authentication.filter;
 
 import com.dekopon.authentication.vo.UsernamePasswordVO;
-import com.dekopon.common.pojo.R;
+import com.dekopon.common.pojo.ObjR;
 import com.dekopon.common.utils.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -63,7 +63,7 @@ public class JwtGeneratorAuthenticationFilter extends UsernamePasswordAuthentica
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
-        response.getOutputStream().write(gson.toJson(R.e(R.Codes.USERNAME_OR_PASSWORD_INVALID, "Wrong " +
+        response.getOutputStream().write(gson.toJson(ObjR.e(ObjR.Codes.USERNAME_OR_PASSWORD_INVALID, "Wrong " +
                 "username or password.")).getBytes(StandardCharsets.UTF_8));
     }
 }
