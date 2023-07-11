@@ -6,7 +6,7 @@ import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.KDataEntity;
 import com.dekopon.display.service.KDataService;
 import com.dekopon.display.service.impl.KDataServiceImpl;
-import com.dekopon.common.pojo.R;
+import com.dekopon.common.pojo.ObjR;
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
@@ -41,13 +41,13 @@ public class KDataRabbitListener {
     @SuppressWarnings("all")
     @RabbitListener(queues = RabbitConfiguration.K_DATA_RESULT_QUEUE_NAME)
     public void saveToDB(Message message,
-                         R r,
+                         ObjR objR,
                          Channel channel) {
         try {
-            Integer code = r.getCode();
+            Integer code = objR.getCode();
             // 有新数据
             if (code == 0) {
-                Map<String, Object> data = (Map<String, Object>) (r.getData());
+                Map<String, Object> data = (Map<String, Object>) (objR.getData());
                 String dataCode = (String) data.get("code");
                 Integer dataDaily = (Integer) data.get("daily");
                 List<Map<String, Object>> dataData = (List<Map<String, Object>>) data.get("data");

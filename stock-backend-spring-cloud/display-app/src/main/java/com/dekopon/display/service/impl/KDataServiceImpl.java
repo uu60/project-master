@@ -7,7 +7,7 @@ import com.dekopon.display.config.RedisConfiguration;
 import com.dekopon.display.dao.KDataMapper;
 import com.dekopon.display.entity.KDataEntity;
 import com.dekopon.display.service.KDataService;
-import com.dekopon.common.pojo.R;
+import com.dekopon.common.pojo.ObjR;
 import com.dekopon.display.utils.DateUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,7 +23,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -56,21 +55,21 @@ public class KDataServiceImpl implements KDataService {
     }
 
     @Override
-    public List<KDataEntity> getMonthPeriodDailyData(String code) {
+    public KDataEntity update(String code) {
         code = code.toUpperCase();
         // 先查询redis
         String data = redisTemplate.opsForValue().get(RedisConfiguration.K_DATA_DAILY_PREFIX + code);
         // 有则直接返回
         if (StringUtils.hasText(data)) {
-            List<KDataEntity> kDataEntities = gson.fromJson(data, new TypeToken<List<KDataEntity>>() {
+            KDataEntity kDataEntity = gson.fromJson(data, new TypeToken<KDataEntity>() {
             }.getType());
             try {
                 if (kDataQueryLock.tryLock(-1, 30, TimeUnit.MINUTES)) {
-                    checkExpiredAndNotifyPython(code, kDataEntities);
+                    checkExpiredAndNotifyPython(code, kDataEntity);
                 }
             } catch (InterruptedException ignored) {
             }
-            return kDataEntities;
+            return kDataEntity;
         } else {
             // 没有获取到锁说明已经有线程去数据库查询了，先直接返回等待
             try {
@@ -79,33 +78,32 @@ public class KDataServiceImpl implements KDataService {
                 }
             } catch (InterruptedException ignore) {
             }
-            // TODO: 附加预测数据
             return null;
         }
     }
 
-    private List<KDataEntity> queryDatabaseAndDecideIfUpdate(String code) {
+    private KDataEntity queryDatabaseAndDecideIfUpdate(String code) {
         code = code.toUpperCase();
         // 没有再查询数据库 30天或者当天数据
-        List<KDataEntity> kDataEntities =
-                kDataMapper.selectList(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).eq(KDataEntity::getDaily, KDataEntity.Const.DAILY_DAILY).orderByDesc(KDataEntity::getTime).last("limit 30"));
-        Collections.reverse(kDataEntities);
+        KDataEntity kDataEntity =
+                kDataMapper.selectOne(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).eq(KDataEntity::getDaily, KDataEntity.Const.DAILY_DAILY).orderByDesc(KDataEntity::getTime).last("limit 1"));
         // 如果数据库没有数据，需要让python去查询
-        if (kDataEntities.isEmpty()) {
+        if (kDataEntity == null) {
             notifyPythonByRabbitAsync(code, 0);
         } else { // 数据库有值
             long current = System.currentTimeMillis();
             redisTemplate.opsForValue().set(RedisConfiguration.K_DATA_DAILY_PREFIX + code,
-                    gson.toJson(kDataEntities), nextDayMillis(current) - current, TimeUnit.MILLISECONDS);
+                    gson.toJson(kDataEntity), nextDayMillis(current) - current,
+                    TimeUnit.MILLISECONDS);
             // 数据过期了
-            checkExpiredAndNotifyPython(code, kDataEntities);
+            checkExpiredAndNotifyPython(code, kDataEntity);
         }
-        return kDataEntities;
+        return kDataEntity;
     }
 
-    private void checkExpiredAndNotifyPython(String code, List<KDataEntity> kDataEntities) {
+    private void checkExpiredAndNotifyPython(String code, KDataEntity kDataEntity) {
         code = code.toUpperCase();
-        long stamp = kDataEntities.get(kDataEntities.size() - 1).getTime().getTime();
+        long stamp = kDataEntity.getTime().getTime();
         if (nextDayMillis(stamp) < System.currentTimeMillis()) {
             notifyPythonByRabbitAsync(code, stamp / 1000);
         } else {
@@ -126,7 +124,7 @@ public class KDataServiceImpl implements KDataService {
             }
             // python去查询所有数据
             rabbitTemplate.convertAndSend("", RabbitConfiguration.K_DATA_QUERY_QUEUE_NAME,
-                    R.ok().data(new TempTO(finalCode, last, 1)));
+                    ObjR.ok().data(new TempTO(finalCode, last, 1)));
         });
     }
 
@@ -140,7 +138,7 @@ public class KDataServiceImpl implements KDataService {
     @Override
     public List<KDataEntity> getSpecificPeriodDailyData(String code, String fromDate, String toDate) {
         if ((StringUtils.hasText(fromDate) && !DateUtils.isISOFormat(fromDate)) || (StringUtils.hasText(toDate) && !DateUtils.isISOFormat(toDate))) {
-            throw new RException(R.Codes.DATE_WRONG_FORMAT, "Wrong time format.");
+            throw new RException(ObjR.Codes.DATE_WRONG_FORMAT, "Wrong time format.");
         }
         code = code.toUpperCase();
         return kDataMapper.selectList(new LambdaQueryWrapper<KDataEntity>().eq(KDataEntity::getCode, code).apply(StringUtils.hasText(fromDate), "date(time) >= date({0})", fromDate).apply(StringUtils.hasText(toDate), "date(time) <= date({0})", toDate));

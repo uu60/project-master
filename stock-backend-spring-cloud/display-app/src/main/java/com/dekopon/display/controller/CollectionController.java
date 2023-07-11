@@ -1,7 +1,7 @@
 package com.dekopon.display.controller;
 
 import com.dekopon.common.exception.RException;
-import com.dekopon.common.pojo.R;
+import com.dekopon.common.pojo.ObjR;
 import com.dekopon.display.service.CollectionService;
 import com.dekopon.display.utils.SecurityUtils;
 import com.dekopon.display.vo.collection.CollectionListItemVO;
@@ -23,27 +23,27 @@ public class CollectionController {
     CollectionService collectionService;
 
     @PostMapping("/collect/{code}")
-    public R collect(@PathVariable String code) {
+    public ObjR collect(@PathVariable String code) {
         String username = SecurityUtils.getCurrentUsername();
         try {
             collectionService.collect(username, code);
-            return R.ok();
+            return ObjR.ok();
         } catch (RException e) {
-            return R.e(e.getCode(), e.getMsg());
+            return ObjR.e(e.getCode(), e.getMsg());
         }
     }
 
     @DeleteMapping("/collect/{code}")
-    public R deleteCollection(@PathVariable String code) {
+    public ObjR deleteCollection(@PathVariable String code) {
         String username = SecurityUtils.getCurrentUsername();
         collectionService.delete(username, code);
-        return R.ok();
+        return ObjR.ok();
     }
 
     @GetMapping("/collect/list")
-    public R list() {
+    public ObjR list() {
         String username = SecurityUtils.getCurrentUsername();
         List<CollectionListItemVO> vos = collectionService.list(username);
-        return R.ok().data(vos);
+        return ObjR.ok().data(vos);
     }
 }

@@ -3,7 +3,7 @@ package com.dekopon.authentication.controller;
 import com.dekopon.authentication.entity.AccountEntity;
 import com.dekopon.authentication.service.AccountService;
 import com.dekopon.authentication.vo.UsernamePasswordVO;
-import com.dekopon.common.pojo.R;
+import com.dekopon.common.pojo.ObjR;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,17 +22,17 @@ public class AccountController {
     AccountService accountService;
 
     @PostMapping("/register")
-    public R register(@RequestBody UsernamePasswordVO vo) {
+    public ObjR register(@RequestBody UsernamePasswordVO vo) {
         AccountEntity accountEntity = accountService.getAccountEntity(vo.getUsername());
         if (accountEntity != null) {
-            return R.e(R.Codes.USERNAME_EXISTED, "Username already exists.");
+            return ObjR.e(ObjR.Codes.USERNAME_EXISTED, "Username already exists.");
         }
         try {
             boolean res = accountService.addAccount(vo);
-            return res ? R.ok() : R.e(R.Codes.USERNAME_OR_PASSWORD_WRONG_FORMAT, "Invalid username or password.");
+            return res ? ObjR.ok() : ObjR.e(ObjR.Codes.USERNAME_OR_PASSWORD_WRONG_FORMAT, "Invalid username or password.");
         } catch (Exception e) {
             e.printStackTrace();
-            return R.e(R.Codes.SERVER_INTERNAL_ERROR, "Server internal error.");
+            return ObjR.e(ObjR.Codes.SERVER_INTERNAL_ERROR, "Server internal error.");
         }
     }
 }

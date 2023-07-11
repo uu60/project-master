@@ -1,6 +1,6 @@
 package com.dekopon.common.security.client.filter;
 
-import com.dekopon.common.pojo.R;
+import com.dekopon.common.pojo.ObjR;
 import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -43,7 +43,7 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>(Arrays.asList(new SimpleGrantedAuthority("ROLE_TEST"), new SimpleGrantedAuthority("TEST"))));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JwtException e) {
-                String json = gson.toJson(R.e(R.Codes.INVALID_TOKEN, "Invalid token."));
+                String json = gson.toJson(ObjR.e(ObjR.Codes.INVALID_TOKEN, "Invalid token."));
                 response.setContentType("application/json");
                 response.getWriter().write(json);
                 return;
