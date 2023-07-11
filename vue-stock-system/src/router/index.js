@@ -42,7 +42,7 @@ const router = new VueRouter({
             path: '/SearchPage',
             meta:{isLogin:true},
             component: SearchPage
-        }
+        },
     ]
 })
 router.beforeEach((to,from,next)=>{

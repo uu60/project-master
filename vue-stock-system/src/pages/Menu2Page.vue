@@ -1,15 +1,18 @@
 <template>
- <div>
-   Menu2
- </div>
+  <div>
+    menu2
+  </div>
 </template>
 
 <script>
+import pubsub from "pubsub-js";
+
 export default {
-  name: "Menu2Page"
+  name: "Menu2Page",
 }
+
 </script>
 
-<style scoped>
+<style scoped lang="less">
 
 </style>

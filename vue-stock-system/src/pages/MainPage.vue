@@ -1,7 +1,6 @@
 <template>
   <div>
     <section class="container">
-
       <!--左容器-->
       <section class="itemLeft">
         <ItemPage>
@@ -13,7 +12,7 @@
       </section>
 
       <!--     中容器-->
-      <section class="itemCenter">
+      <el-card class="itemCenter" shadow="always">
         <!--        <el-button type="warning" icon="el-icon-star-off" circle></el-button>-->
         <el-row>
           <el-col span="4" offset="11">
@@ -25,7 +24,9 @@
           </el-col>
         </el-row>
         <div class="echart" id="mychart" style="width:100%; height: 400px;"></div>
-      </section>
+        <div class="echart" id="myforecastchart" style="width:100%; height: 300px;"></div>
+      </el-card>
+
 
       <!--      右容器-->
       <section class="itemRight">
@@ -79,22 +80,74 @@ export default {
 
     //接收check按钮信息
     pubsub.subscribe('请显示本行内容', (msg, name) => {
-      // console.log(window.sessionStorage.getItem(name))
-      if (window.sessionStorage.getItem(name)) {
-        this.initData(JSON.parse(window.sessionStorage.getItem(name)))
-        this.initEcharts(this.stotitle, this.stodata);
-      } else {
-        alert("请在搜索框中查询")
-      }
+      // console.log(window.localStorage.getItem(name))
+      const today = new Date();
+      // 获取 30 天前的时间
+      const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+      // 将时间转换为 ISO 时间字符串
+      const isoString = thirtyDaysAgo.toISOString();
+
+      axios.get(`/api/display/api/v1/data/daily/${name}?fromDate=${thirtyDaysAgo.toISOString()}&toDate=${today.toISOString()}`, {
+        headers: {
+          // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+          'Authorization': localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        }
+      })
+          .then(res => {
+            console.log(res.data)
+            if (res.data.code == 0) {
+              this.initData(res.data);
+              this.initEcharts(this.stotitle, this.stodata);
+              window.localStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
+
+            } else if (res.data.code == 1) {
+              this.$message.error("The data has not been queried, please wait patiently before querying");
+              pubsub.publish("clear", res.data.code)
+            } else {
+              this.$message.error(this.$store.state.serverErrMsg);
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          })
+
     });
+
+    pubsub.subscribe("请显示本行预测数据", (msg, name) => {
+      axios.get(`/api/prediction/api/v1/trend/${name}?fromDate=${new Date().toISOString()}`, {
+        headers: {
+          // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+          'Authorization': localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        }
+      })
+          .then(res=> {
+            // console.log("yuce",res.data)
+            if (res.data.code === 0) {
+              this.initForecastChart(res.data.data)
+            } else {
+              this.$message.error("日期格式有问题");
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          })
+    })
 
     pubsub.subscribe("取消收藏图标按钮", (msgName, data) => {
       // console.log("取消收藏图标按钮回调",data.stockName)
-      window.sessionStorage.setItem(data.stockName + 'icon', 'el-icon-star-off')
+      window.localStorage.setItem(data.stockName + 'icon', 'el-icon-star-off')
       if (data.stockName === this.stockName) {
         this.iconData = 'el-icon-star-off'
       }
     });
+
+    //接收预测数据
+    pubsub.subscribe("yuce", (msgName, foredata) =>{
+        console.log("jieshouyuceshuju", foredata)
+        this.initForecastChart(foredata.data)
+    })
   },
   methods: {
     initData(data) {
@@ -122,12 +175,12 @@ export default {
       // console.log("判断了", stockTitle)
       //判断storage中是否存了
       var x = stockTitle + 'icon'
-      // console.log("fanhui",window.sessionStorage.getItem(x))
-      if (window.sessionStorage.getItem(x)) {
-        this.iconData = window.sessionStorage.getItem(stockTitle + 'icon')
-        console.log("图标",this.iconData)
+      // console.log("fanhui",window.localStorage.getItem(x))
+      if (window.localStorage.getItem(x)) {
+        this.iconData = window.localStorage.getItem(stockTitle + 'icon')
+        // console.log("图标",this.iconData)
       } else {
-        console.log("没有图标")
+        // console.log("没有图标")
         this.iconData = 'el-icon-star-off'
       }
       //接收清除图表消息
@@ -212,6 +265,57 @@ export default {
         myChart.resize();
       });
     },
+
+    initForecastChart(forecastData){
+      pubsub.subscribe('clear', (msg, code) => {
+        myForecastChart.clear()
+      })
+
+      const option= {
+        title: {
+          text: "Forecast"
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+          }
+        },
+        xAxis: {
+          data: forecastData.map(item => moment(new Date(item.time)).format('YYYY-MM-DD HH:mm:ss'))
+        },
+        yAxis: {
+          scale: true,
+          splitArea: {
+            show: true
+          }
+        },
+        series: [
+          {
+            type: "candlestick",
+            data: forecastData.map(item => {
+              return [item.open, item.close, item.low, item.high]
+            })
+          },
+          {
+            name: 'ma2',
+            type: 'line',
+            smooth: true,
+            data: this.macd(forecastData, 2),
+            lineStyle: {
+              opacity: .5
+            }
+          },
+        ],
+      };
+      const myForecastChart = echarts.init(document.getElementById("myforecastchart"));
+      myForecastChart.setOption(option);
+      //随着屏幕大小调节图表
+      window.addEventListener("resize", () => {
+        myForecastChart.resize();
+      });
+      console.log("yucewancheng")
+    },
     collection() {
       if (this.iconData == 'el-icon-star-off') {
         //未收藏 --> 收藏
@@ -224,7 +328,7 @@ export default {
           // console.log("收藏回调",res.data)
           if (res.data.code == 0 || res.data.code == 1) {
             this.iconData = 'el-icon-star-on'
-            window.sessionStorage.setItem(this.stotitle + 'icon', this.iconData)
+            window.localStorage.setItem(this.stotitle + 'icon', this.iconData)
             pubsub.publish("stodata", this.stodata)
             console.log("发布完成")
           }
@@ -241,7 +345,7 @@ export default {
         }).then(res => {
           if (res.data.code == 0) {
             this.iconData = 'el-icon-star-off'
-            window.sessionStorage.setItem(this.stotitle + 'icon', this.iconData)
+            window.localStorage.setItem(this.stotitle + 'icon', this.iconData)
             pubsub.publish("取消收藏", this.stotitle)
           }
         }).catch(err => {
@@ -272,7 +376,7 @@ export default {
   .itemCenter {
     flex: 5;
     height: 10.5 rpx;
-    border: 1px solid blue;
+    //border: 1px solid blue;
     padding: 0.1rem;
     margin: .25rem;
   }

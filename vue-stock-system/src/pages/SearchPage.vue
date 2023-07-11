@@ -20,8 +20,7 @@
             <el-dropdown>
               <span class="el-dropdown-link">  {{ userName }}</span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人信息</el-dropdown-item>
-                <el-dropdown-item divided @click.native="logout">退出</el-dropdown-item>
+                <el-dropdown-item divided @click.native="logout">Logout</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -124,22 +123,55 @@ export default {
     },
     searchHandler() {
       //发送网络请求并发布订阅
-      axios.get(`/api/display/api/v1/data/daily/${this.$data.search}`, {
+      if (window.localStorage.getItem(this.keyword)) {
+        pubsub.publish("数据", JSON.parse(window.localStorage.getItem(this.keyword)))
+      } else {
+        const today = new Date();
+        // 获取 30 天前的时间
+        const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+        // 将时间转换为 ISO 时间字符串
+        const isoString = thirtyDaysAgo.toISOString();
+
+        axios.get(`/api/display/api/v1/data/daily/${this.$data.search}?fromDate=${thirtyDaysAgo.toISOString()}&toDate=${today.toISOString()}`, {
+          headers: {
+            // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+            'Authorization': localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+          }
+        })
+            .then(res => {
+              console.log(res.data)
+              if (res.data.code == 0) {
+                pubsub.publish("数据", res.data)
+                // console.log("查到了数据",res.data)
+                // console.log(res.data.data[0].code)
+                window.localStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
+
+              } else if (res.data.code == 1) {
+                this.$message.error("The data has not been queried, please wait patiently before querying");
+                pubsub.publish("clear", res.data.code)
+              } else {
+                this.$message.error(this.$store.state.serverErrMsg);
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            })
+      }
+
+      axios.get(`/api/prediction/api/v1/trend/${this.$data.search}?fromDate=${new Date().toISOString()}`, {
         headers: {
+          // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
           'Authorization': localStorage.getItem('token'),
           'Content-Type': 'application/json'
         }
       })
-          .then(res => {
-            // console.log(res.data)
-            if (res.data.code == 0) {
-              pubsub.publish("数据", res.data)
-              window.sessionStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
-              // console.log("查到了数据")
-            } else if (res.data.code == 1) {
-              this.$message.error("The data has not been queried, please wait patiently before querying");
+          .then(res=> {
+            // console.log("yuce",res.data)
+            if (res.data.code === 0) {
+              pubsub.publish("yuce", res.data)
             } else {
-              this.$message.error(this.$store.state.serverErrMsg);
+              this.$message.error("日期格式有问题");
             }
           })
           .catch(err => {
@@ -194,7 +226,7 @@ export default {
       }
     }).then(res=>{
       for (var i = 0; i < res.data.data.length; i++) {
-        window.sessionStorage.setItem(res.data.data[i].code + 'icon', 'el-icon-star-on')
+        window.localStorage.setItem(res.data.data[i].code + 'icon', 'el-icon-star-on')
       }
     })
   }

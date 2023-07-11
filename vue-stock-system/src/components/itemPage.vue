@@ -1,7 +1,9 @@
 <template>
-  <div class="item">
+  <div>
     <!--设置插槽-->
-    <slot></slot>
+    <el-card class="item" shadow="always">
+      <slot></slot>
+    </el-card>
   </div>
 </template>
 
@@ -15,7 +17,7 @@ export default {
 <style scoped lang="less">
   .item{
     height: 5.125rem;
-    border: 1px solid blue;
+    //border: 1px solid blue;
     margin: .25rem;
     //background-color: rgba(12, 130, 255, .85);
   }

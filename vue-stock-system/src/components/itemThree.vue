@@ -71,18 +71,20 @@ export default {
               open: res.data.data[i].openPrice.toFixed(2),
               zhengfu: (res.data.data[i].closePrice - res.data.data[i].openPrice).toFixed(2)
             })
-            window.sessionStorage.setItem(res.data.data[i].code + 'icon', 'el-icon-star-on')
+            window.localStorage.setItem(res.data.data[i].code + 'icon', 'el-icon-star-on')
           }
         })
         .catch(err => {
           console.error(err);
-        })
+        });
+
   },
   methods: {
     //点击check查看图表
     handleClick(row) {
       // console.log(row);
       pubsub.publish("请显示本行内容", row.stockName)
+      pubsub.publish("请显示本行预测数据", row.stockName)
     },
     //点击delete
     handleDelete(row) {
