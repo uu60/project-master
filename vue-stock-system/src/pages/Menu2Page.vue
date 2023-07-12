@@ -41,7 +41,7 @@ export default {
   },
   watch:{
     selectList(item1,item2){
-      console.log("表格值", this.selectList)
+      console.log("选中表格值", this.selectList)
     }
   },
   methods: {
