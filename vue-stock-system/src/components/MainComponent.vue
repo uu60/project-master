@@ -81,8 +81,8 @@ export default {
     search() {
       ///display/api/v1/data/daily/{code}
       // console.log(this.$data.keyword)
-      if (window.localStorage.getItem(this.keyword)) {
-        pubsub.publish("数据", JSON.parse(window.localStorage.getItem(this.keyword)))
+      if (window.sessionStorage.getItem(this.keyword)) {
+        pubsub.publish("数据", JSON.parse(window.sessionStorage.getItem(this.keyword)))
       } else {
         const today = new Date();
         // 获取 30 天前的时间
@@ -103,7 +103,7 @@ export default {
                 pubsub.publish("数据", res.data)
                 // console.log("查到了数据",res.data)
                 // console.log(res.data.data[0].code)
-                window.localStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
+                window.sessionStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
 
               } else if (res.data.code == 1) {
                 this.$message.error("The data has not been queried, please wait patiently before querying");

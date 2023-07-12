@@ -99,7 +99,7 @@ export default {
             if (res.data.code == 0) {
               this.initData(res.data);
               this.initEcharts(this.stotitle, this.stodata);
-              window.localStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
+              window.sessionStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
 
             } else if (res.data.code == 1) {
               this.$message.error("The data has not been queried, please wait patiently before querying");
