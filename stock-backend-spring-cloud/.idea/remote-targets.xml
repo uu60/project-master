@@ -5,7 +5,7 @@
       <target name="root@ser3:22" type="ssh/sftp" uuid="dac07223-c12b-4d23-a706-93ddf44ffdc7">
         <config>
           <option name="projectRootOnTarget" value="/root/spring-cloud-stock-system" />
-          <option name="serverName" value="root@47.109.79.121:22 password" />
+          <option name="serverName" value="root@ser3:22 agent" />
           <option name="useRsync" value="true" />
         </config>
         <ContributedStateBase type="JavaLanguageRuntime">
@@ -18,7 +18,7 @@
       <target name="root@ser4:22" type="ssh/sftp" uuid="847d1747-2bcc-48e6-84c6-0dc7d3b7354b">
         <config>
           <option name="projectRootOnTarget" value="/root/spring-cloud-stock-system" />
-          <option name="serverName" value="root@47.109.56.80:22 password" />
+          <option name="serverName" value="root@ser4:22 agent" />
           <option name="useRsync" value="true" />
         </config>
         <ContributedStateBase type="JavaLanguageRuntime">

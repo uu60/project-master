@@ -96,10 +96,9 @@ public class PredictionServiceImpl implements PredictionService {
         }
         int total = 0;
 
-        int i = 1, j = 0;
+        int i = 0, j = 0;
         while (i < history.size() && j < upPredictionIntegrityVOs.size()) {
             KDataEntityVO kDataEntity = history.get(i);
-            KDataEntityVO prevKDataEntity = history.get(i - 1);
             UpPredictionIntegrityVO vo = upPredictionIntegrityVOs.get(j);
             int compare = kDataEntity.getTime().compareTo(vo.getTime());
             if (compare < 0) {
@@ -110,28 +109,33 @@ public class PredictionServiceImpl implements PredictionService {
                 j++;
                 continue;
             }
-            // 匹配上，检查模型预测是否正确
-            boolean openDidUp = kDataEntity.getOpen().compareTo(prevKDataEntity.getOpen()) > 0;
-            boolean highDidUp = kDataEntity.getHigh().compareTo(prevKDataEntity.getHigh()) > 0;
-            boolean lowDidUp = kDataEntity.getLow().compareTo(prevKDataEntity.getLow()) > 0;
-            boolean closeDidUp = kDataEntity.getClose().compareTo(prevKDataEntity.getClose()) > 0;
-            boolean volumeDidUp = kDataEntity.getVolume().compareTo(prevKDataEntity.getVolume()) > 0;
-            if (openDidUp == vo.getOpen()) {
-                correctNumMap.put("open", correctNumMap.get("open") + 1);
+            if (i > 0) {
+                KDataEntityVO prevKDataEntity = history.get(i - 1);
+                // 匹配上，检查模型预测是否正确
+                boolean openDidUp = kDataEntity.getOpen().compareTo(prevKDataEntity.getOpen()) > 0;
+                boolean highDidUp = kDataEntity.getHigh().compareTo(prevKDataEntity.getHigh()) > 0;
+                boolean lowDidUp = kDataEntity.getLow().compareTo(prevKDataEntity.getLow()) > 0;
+                boolean closeDidUp = kDataEntity.getClose().compareTo(prevKDataEntity.getClose()) > 0;
+                boolean volumeDidUp = kDataEntity.getVolume().compareTo(prevKDataEntity.getVolume()) > 0;
+                if (openDidUp == vo.getOpen()) {
+                    correctNumMap.put("open", correctNumMap.get("open") + 1);
+                }
+                if (highDidUp == vo.getHigh()) {
+                    correctNumMap.put("high", correctNumMap.get("high") + 1);
+                }
+                if (lowDidUp == vo.getLow()) {
+                    correctNumMap.put("low", correctNumMap.get("low") + 1);
+                }
+                if (closeDidUp == vo.getClose()) {
+                    correctNumMap.put("close", correctNumMap.get("close") + 1);
+                }
+                if (volumeDidUp == vo.getVolume()) {
+                    correctNumMap.put("volume", correctNumMap.get("volume") + 1);
+                }
+                total++;
             }
-            if (highDidUp == vo.getHigh()) {
-                correctNumMap.put("high", correctNumMap.get("high") + 1);
-            }
-            if (lowDidUp == vo.getLow()) {
-                correctNumMap.put("low", correctNumMap.get("low") + 1);
-            }
-            if (closeDidUp == vo.getClose()) {
-                correctNumMap.put("close", correctNumMap.get("close") + 1);
-            }
-            if (volumeDidUp == vo.getVolume()) {
-                correctNumMap.put("volume", correctNumMap.get("volume") + 1);
-            }
-            total++;
+            i++;
+            j++;
         }
 
         ScoreVO scoreVO = new ScoreVO();
