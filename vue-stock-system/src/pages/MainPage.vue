@@ -18,7 +18,10 @@
           <el-col span="4" offset="11">
             <h1 style="font-size: 20px;margin-left: 10px">{{ stockName }}</h1>
           </el-col>
-          <el-col span="2" offset="7">
+          <el-col span="2" offset="4">
+            <el-button type="primary" circle size="mini" class="el-icon-refresh" @click="refresh" v-if="isShow"/>
+          </el-col>
+          <el-col span="2" offset="1">
             <el-button v-bind:icon="iconData" type="warning" circle size="mini" v-if="isShow"
                        @click="collection"></el-button>
           </el-col>
@@ -122,7 +125,7 @@ export default {
           'Content-Type': 'application/json'
         }
       })
-          .then(res=> {
+          .then(res => {
             // console.log("yuce",res.data)
             if (res.data.code === 0) {
               this.initForecastChart(res.data.data)
@@ -144,9 +147,9 @@ export default {
     });
 
     //接收预测数据
-    pubsub.subscribe("yuce", (msgName, foredata) =>{
-        console.log("jieshouyuceshuju", foredata)
-        this.initForecastChart(foredata.data)
+    pubsub.subscribe("yuce", (msgName, foredata) => {
+      console.log("jieshouyuceshuju", foredata)
+      this.initForecastChart(foredata.data)
     })
   },
   methods: {
@@ -265,13 +268,12 @@ export default {
         myChart.resize();
       });
     },
-
-    initForecastChart(forecastData){
+    initForecastChart(forecastData) {
       pubsub.subscribe('clear', (msg, code) => {
         myForecastChart.clear()
       })
 
-      const option= {
+      const option = {
         title: {
           text: "Forecast"
         },
@@ -355,8 +357,25 @@ export default {
 
       }
     },
+    refresh() {
+      axios.get(`/api/display/api/v1/data/update/${this.stockName}`, {
+        headers: {
+          // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+          'Authorization': localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        }
+      }).then(res => {
+          console.log("刷新", res.data)
+          if (res.data.code === 0) {
+            this.$message.success('It is already the latest.')
+          } else  {
+            this.$message.info('Please wait for update.')
+          }
+      }).catch(err => {
+        console.error(err);
+      })
+    }
   },
-
 }
 </script>
 

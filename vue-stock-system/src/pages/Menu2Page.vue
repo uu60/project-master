@@ -42,6 +42,15 @@ export default {
   watch:{
     selectList(item1,item2){
       console.log("选中表格值", this.selectList)
+    // item2.forEach(element => {
+    //   console.log("表格元素", element)
+    // })
+      console.log("item1", item1)
+      console.log("item2", item2)
+      item1.forEach(a => {
+        console.log("a", this.StockList[a])
+
+      })
     }
   },
   methods: {
@@ -71,36 +80,10 @@ export default {
       this.stodata = data.data;
       console.log("初始化完成")
     },
-    initEcharts(stockTitle, stockData) {
-      //按钮是否可见
-      this.isShow = true
-      // console.log("判断了", stockTitle)
-      //判断storage中是否存了
-      var x = stockTitle + 'icon'
-      // console.log("fanhui",window.localStorage.getItem(x))
-      if (window.localStorage.getItem(x)) {
-        this.iconData = window.localStorage.getItem(stockTitle + 'icon')
-        // console.log("图标",this.iconData)
-      } else {
-        // console.log("没有图标")
-        this.iconData = 'el-icon-star-off'
-      }
-      //接收清除图表消息
-      pubsub.subscribe('clear', (msg, code) => {
-        myChart.clear()
-        this.stockName = ''
-        this.isShow = false
-      })
-
-      //定义title
-      this.stockName = stockTitle
+    initEcharts(stockData) {
 
       //图表配置
       const option = {
-        // title: {
-        //   // left: '45%',
-        //   text: stockTitle
-        // },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -130,33 +113,6 @@ export default {
             data: stockData.map(item => {
               return [item.open, item.close, item.low, item.high]
             })
-          },
-          {
-            name: 'ma2',
-            type: 'line',
-            smooth: true,
-            data: this.macd(stockData, 2),
-            lineStyle: {
-              opacity: .5
-            }
-          },
-          {
-            name: 'ma5',
-            type: 'line',
-            smooth: true,
-            data: this.macd(stockData, 5),
-            lineStyle: {
-              opacity: .5
-            }
-          },
-          {
-            name: 'ma10',
-            type: 'line',
-            smooth: true,
-            data: this.macd(stockData, 10),
-            lineStyle: {
-              opacity: .5
-            }
           },
         ]
       };

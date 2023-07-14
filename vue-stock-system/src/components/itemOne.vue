@@ -1,31 +1,78 @@
 <template>
   <div>
     <div class="block">
-      <div style="margin: 5px; font-size: 14px">Obtain the increase probability of a specified date.</div>
-      <el-date-picker
-          v-model="value1"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择日期"
-      style="margin: 5px">
-      </el-date-picker>
-      <el-button type="primary" plain size="mini" @click="Confirmation">comfirm</el-button>
+      <el-descriptions class="margin-top" title="The increase probability" :column="3" :size="'mini'" border>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-user"></i>
+            用户名
+          </template>
+          kooriookami
+        </el-descriptions-item>
+
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-mobile-phone"></i>
+            手机号
+          </template>
+          18100000000
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-location-outline"></i>
+            居住地
+          </template>
+          苏州市
+        </el-descriptions-item>
+
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-tickets"></i>
+            备注
+          </template>
+          <el-tag size="small">学校</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-office-building"></i>
+            联系地址
+          </template>
+          江苏省苏州市吴中区吴中大道 1188 号
+        </el-descriptions-item>
+      </el-descriptions>
+
+
     </div>
   </div>
 </template>
 
 <script>
+import pubsub from "pubsub-js";
+import axios from "axios";
+
 export default {
   name: "itemOne",
-  data(){
-    return{
-      value1: '',
-    }
+  data() {
+    return {}
   },
-  methods:{
-    Confirmation() {
-      console.log("时间", this.value1)
-    }
+  methods: {},
+
+  mounted() {
+    pubsub.subscribe('数据', (msgName, data) => {
+      name = data.data[0].code
+      console.log("name", name)
+      axios.get(`/api/prediction/api/v1/up/${name}?date=${new Date().toISOString()}`, {
+        headers: {
+          // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+          'Authorization': localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        }
+      }).then(res => {
+        console.log("yuce res", res.data)
+      }).catch(err => {
+        console.error(err);
+      })
+    });
   }
 }
 </script>

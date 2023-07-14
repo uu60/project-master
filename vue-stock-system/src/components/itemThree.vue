@@ -40,11 +40,11 @@ export default {
   },
   mounted() {
     pubsub.subscribe('stodata', (msgName, stodata) => {
-      // console.log("表格数据接收", stodata)
+      console.log("表格数据接收", stodata)
       this.tableData.push({
         stockName: stodata[0].code,
-        open: (stodata[29].open).toFixed(2),
-        zhengfu: (stodata[29].close - stodata[29].open).toFixed(2)
+        open: (stodata[this.tableData.length-1].open).toFixed(2),
+        zhengfu: (stodata[this.tableData.length-1].close - stodata[this.tableData.length-1].open).toFixed(2)
       })
     });
 
