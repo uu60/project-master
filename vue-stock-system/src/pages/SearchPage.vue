@@ -128,7 +128,7 @@ export default {
       } else {
         const today = new Date();
         // 获取 30 天前的时间
-        const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+        const thirtyDaysAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
         // 将时间转换为 ISO 时间字符串
         const isoString = thirtyDaysAgo.toISOString();
 
