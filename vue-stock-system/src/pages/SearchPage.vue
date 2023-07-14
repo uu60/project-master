@@ -27,14 +27,11 @@
         </el-row>
       </el-header>
       <el-main>
-        <el-row>
-          <!--      <el-col :span="3" class="left">-->
-          <!--        <img src="//s0.meituan.net/bs/fe-web-meituan/fa5f0f0/img/logo.png" alt="美团" />-->
-          <!--      </el-col>-->
-          <el-col span="14" offset="10" style="margin-top: 200px">
-            <h1>Stock Price System</h1>
-          </el-col>
-          <el-col :span="10" class="center" offset="7">
+        <el-row type="flex" justify="center">
+          <h1 style="font-size: 40px; margin-top: 200px">Investment Analytics System</h1>
+        </el-row>
+        <el-row type="flex" justify="center">
+          <el-col :span="15" style="margin-top: 20px">
             <el-input
                 v-model="search"
                 @focus="focus"
@@ -166,7 +163,7 @@ export default {
           'Content-Type': 'application/json'
         }
       })
-          .then(res=> {
+          .then(res => {
             // console.log("yuce",res.data)
             if (res.data.code === 0) {
               pubsub.publish("yuce", res.data)
@@ -224,7 +221,7 @@ export default {
         'Authorization': localStorage.getItem('token'),
         'Content-Type': 'application/json'
       }
-    }).then(res=>{
+    }).then(res => {
       for (var i = 0; i < res.data.data.length; i++) {
         window.localStorage.setItem(res.data.data[i].code + 'icon', 'el-icon-star-on')
       }
@@ -234,12 +231,6 @@ export default {
 </script>
 
 <style scoped lang="less">
-
-.center {
-  margin-top: 50px;
-  //alignment-baseline: central;
-}
-
 #search {
   //background-color: ;
   border-radius: 0%;
