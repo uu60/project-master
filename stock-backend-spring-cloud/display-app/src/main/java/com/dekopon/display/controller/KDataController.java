@@ -42,7 +42,7 @@ public class KDataController {
             return ObjR.e(e.getCode(), e.getMsg());
         }
         if (dailyData == null || dailyData.isEmpty()) {
-            return ObjR.e(ObjR.Codes.K_DATA_WAIT, "Please wait for update.");
+            return ObjR.e(ObjR.Codes.K_DATA_WAIT, "Please update.");
         }
         return ObjR.ok().data(dailyData);
     }
