@@ -209,3 +209,18 @@ Server3 (47.109.79.121):	table(k_data_predicted), Redis, RabbitMQ
 Server4 (47.109.56.80):	DisplayApplication, table(k_data), Redis, RabbitMQ
 
 Server5 (16.163.97.36):	python(k_data_query_listener)
+<hr/>
+
+2023/06/17
+
+### 1 Server status
+
+Server1 (8.137.96.5):	Nginx, GatewayApplication, Redis, RabbitMQ
+
+Server2 (8.137.98.1):	Nacos, Redis, RabbitMQ
+
+Server3 (47.109.79.121):	AuthenticationApplication, PredictionApplication, table(account), table(up_prediction), table(k_data_predicted), Redis, RabbitMQ
+
+Server4 (47.109.56.80):	DisplayApplication, table(k_data), Redis, RabbitMQ
+
+Server5 (16.163.97.36):	python(k_data_query_listener)
