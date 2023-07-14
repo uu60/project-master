@@ -177,14 +177,14 @@ public class PredictionServiceImpl implements PredictionService {
     }
 
     @Override
-    @Cacheable(value = "getUpProbability", sync = true)
+//    @Cacheable(value = "getUpProbability", sync = true)
     public List<GetUpProbabilityVO> getUpProbability(String code, String date) {
         if (!StringUtils.hasText(date) || (!DateUtils.isISOOffsetDateTimeFormat(date) && !DateUtils.isISOInstantFormat(date))) {
             throw new RException(ObjR.Codes.DATE_WRONG_FORMAT, "Wrong date format.");
         }
         code = code.toUpperCase();
         List<UpPredictionEntity> entities =
-                upPredictionMapper.selectList(new LambdaQueryWrapper<UpPredictionEntity>().eq(UpPredictionEntity::getCode, code).apply("date({0}}) = date(time)", date));
+                upPredictionMapper.selectList(new LambdaQueryWrapper<UpPredictionEntity>().eq(UpPredictionEntity::getCode, code).apply("date({0}) = date(time)", date));
         return entities.stream().map(entity -> new GetUpProbabilityVO(entity.getCode(), entity.getField(),
                 entity.getUp(), entity.getTime())).toList();
     }
