@@ -1,18 +1,26 @@
 <template>
-  <div>
-    <el-table :data="tableData" height="321.10px" style="width: 353.338px;  font-size: 5px;">
+  <div style="width: 400px">
+    <el-row type="flex" justify="center">
+      <h1>My Collections</h1>
+    </el-row>
+    <el-table
+        :row-class-name="tableRowClassName"
+        :data="tableData"
+        :row-style="{height: '0'}"
+        :cell-style="{padding: '5px'}"
+    >
       <div slot="empty" style="text-align: center">
-        <el-empty description="no records" image-size="108"/>
+        <el-empty description="no records" :image-size="108"/>
       </div>
-      <el-table-column fixed prop="stockName" label="Stock" width="100"></el-table-column>
-      <el-table-column prop="open" label="open" width="75"></el-table-column>
-      <el-table-column prop="zhengfu" label="+/-" width="75"></el-table-column>
-      <el-table-column
-          label="operation"
-          width="100">
+      <el-table-column fixed prop="stockName" label="Stock" style="color: red"></el-table-column>
+      <el-table-column prop="open" label="Open"></el-table-column>
+      <el-table-column prop="delta" label="Delta"></el-table-column>
+      <el-table-column label="Operation" width="125">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="mini">check</el-button>
-          <el-button @click="handleDelete(scope.row)" type="text" size="mini">delete</el-button>
+          <el-button @click="handleClick(scope.row)" type="primary" size="mini" icon="el-icon-search"
+                     style="padding: 10px"></el-button>
+          <el-button @click="handleDelete(scope.row)" type="danger" size="mini" icon="el-icon-delete
+" style="padding: 10px"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -41,11 +49,15 @@ export default {
   mounted() {
     pubsub.subscribe('stodata', (msgName, stodata) => {
       console.log("表格数据接收", stodata)
-      this.tableData.push({
+      let item = {
         stockName: stodata[0].code,
-        open: (stodata[this.tableData.length-1].open).toFixed(2),
-        zhengfu: (stodata[this.tableData.length-1].close - stodata[this.tableData.length-1].open).toFixed(2)
-      })
+        open: (stodata[this.tableData.length - 1].open).toFixed(2),
+        delta: (stodata[this.tableData.length - 1].close - stodata[this.tableData.length - 1].open).toFixed(2)
+      };
+      if (item.delta >= 0) {
+        item.delta = "+" + item.delta;
+      }
+      this.tableData.push(item)
     });
 
     //订阅取消收藏的信息
@@ -65,12 +77,16 @@ export default {
     })
         .then(res => {
           // console.log("收藏列表信息", res.data)
-          for (var i = 0; i < res.data.data.length; i++){
-            this.tableData.push({
+          for (var i = 0; i < res.data.data.length; i++) {
+            let item = {
               stockName: res.data.data[i].code,
               open: res.data.data[i].openPrice.toFixed(2),
-              zhengfu: (res.data.data[i].closePrice - res.data.data[i].openPrice).toFixed(2)
-            })
+              delta: (res.data.data[i].closePrice - res.data.data[i].openPrice).toFixed(2)
+            };
+            if (item.delta >= 0) {
+              item.delta = "+" + item.delta;
+            }
+            this.tableData.push(item)
             window.localStorage.setItem(res.data.data[i].code + 'icon', 'el-icon-star-on')
           }
         })
@@ -80,6 +96,13 @@ export default {
 
   },
   methods: {
+    tableRowClassName({row, rowIndex}) {
+      if (row.delta.indexOf("+") !== -1) {
+        return "positive-row";
+      } else {
+        return "negative-row";
+      }
+    },
     //点击check查看图表
     handleClick(row) {
       // console.log(row);
@@ -153,6 +176,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+.el-table .positive-row {
+  color: #b61718;
+  font-weight: bold;
+}
 
+.el-table .negative-row {
+  color: #0b715e;
+  font-weight: bold;
+}
 </style>
