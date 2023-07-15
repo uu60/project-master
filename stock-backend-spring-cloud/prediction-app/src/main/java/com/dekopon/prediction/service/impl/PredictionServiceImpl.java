@@ -2,8 +2,8 @@ package com.dekopon.prediction.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dekopon.common.exception.RException;
-import com.dekopon.common.pojo.R;
 import com.dekopon.common.pojo.ObjR;
+import com.dekopon.common.pojo.R;
 import com.dekopon.prediction.dao.KDataPredictedMapper;
 import com.dekopon.prediction.dao.UpPredictionMapper;
 import com.dekopon.prediction.entity.KDataPredictedEntity;
@@ -17,18 +17,15 @@ import com.dekopon.prediction.service.PredictionService;
 import com.dekopon.prediction.utils.DateUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import jakarta.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -94,13 +91,18 @@ public class PredictionServiceImpl implements PredictionService {
         for (String field : fields) {
             correctNumMap.put(field, 0);
         }
-        int total = 0;
+        int openTotal = 0;
+        int highTotal = 0;
+        int lowTotal = 0;
+        int closeTotal = 0;
+        int volumeTotal = 0;
 
         int i = 0, j = 0;
         while (i < history.size() && j < upPredictionIntegrityVOs.size()) {
             KDataEntityVO kDataEntity = history.get(i);
             UpPredictionIntegrityVO vo = upPredictionIntegrityVOs.get(j);
-            int compare = kDataEntity.getTime().compareTo(vo.getTime());
+            int compare =
+                    DateUtils.getStartOfDay(kDataEntity.getTime()).compareTo(DateUtils.getStartOfDay(vo.getTime()));
             if (compare < 0) {
                 // 历史数据小
                 i++;
@@ -112,38 +114,52 @@ public class PredictionServiceImpl implements PredictionService {
             if (i > 0) {
                 KDataEntityVO prevKDataEntity = history.get(i - 1);
                 // 匹配上，检查模型预测是否正确
-                boolean openDidUp = kDataEntity.getOpen().compareTo(prevKDataEntity.getOpen()) > 0;
-                boolean highDidUp = kDataEntity.getHigh().compareTo(prevKDataEntity.getHigh()) > 0;
-                boolean lowDidUp = kDataEntity.getLow().compareTo(prevKDataEntity.getLow()) > 0;
-                boolean closeDidUp = kDataEntity.getClose().compareTo(prevKDataEntity.getClose()) > 0;
-                boolean volumeDidUp = kDataEntity.getVolume().compareTo(prevKDataEntity.getVolume()) > 0;
-                if (openDidUp == vo.getOpen()) {
-                    correctNumMap.put("open", correctNumMap.get("open") + 1);
+                if (kDataEntity.getOpen() != null && prevKDataEntity.getOpen() != null && vo.getOpen() != null) {
+                    boolean openDidUp = kDataEntity.getOpen().compareTo(prevKDataEntity.getOpen()) > 0;
+                    if (openDidUp == vo.getOpen()) {
+                        correctNumMap.put("open", correctNumMap.get("open") + 1);
+                    }
+                    openTotal++;
                 }
-                if (highDidUp == vo.getHigh()) {
-                    correctNumMap.put("high", correctNumMap.get("high") + 1);
+                if (kDataEntity.getHigh() != null && prevKDataEntity.getHigh() != null && vo.getHigh() != null) {
+                    boolean highDidUp = kDataEntity.getHigh().compareTo(prevKDataEntity.getHigh()) > 0;
+                    if (highDidUp == vo.getHigh()) {
+                        correctNumMap.put("high", correctNumMap.get("high") + 1);
+                    }
+                    highTotal++;
                 }
-                if (lowDidUp == vo.getLow()) {
-                    correctNumMap.put("low", correctNumMap.get("low") + 1);
+                if (kDataEntity.getLow() != null && prevKDataEntity.getLow() != null && vo.getLow() != null) {
+                    boolean lowDidUp = kDataEntity.getLow().compareTo(prevKDataEntity.getLow()) > 0;
+                    if (lowDidUp == vo.getLow()) {
+                        correctNumMap.put("low", correctNumMap.get("low") + 1);
+                    }
+                    lowTotal++;
                 }
-                if (closeDidUp == vo.getClose()) {
-                    correctNumMap.put("close", correctNumMap.get("close") + 1);
+                if (kDataEntity.getClose() != null && prevKDataEntity.getClose() != null && vo.getClose() != null) {
+                    boolean closeDidUp = kDataEntity.getClose().compareTo(prevKDataEntity.getClose()) > 0;
+                    if (closeDidUp == vo.getClose()) {
+                        correctNumMap.put("close", correctNumMap.get("close") + 1);
+                    }
+                    closeTotal++;
                 }
-                if (volumeDidUp == vo.getVolume()) {
-                    correctNumMap.put("volume", correctNumMap.get("volume") + 1);
+                if (kDataEntity.getVolume() != null && prevKDataEntity.getVolume() != null && vo.getVolume() != null) {
+                    boolean volumeDidUp = kDataEntity.getVolume().compareTo(prevKDataEntity.getVolume()) > 0;
+                    if (volumeDidUp == vo.getVolume()) {
+                        correctNumMap.put("volume", correctNumMap.get("volume") + 1);
+                    }
+                    volumeTotal++;
                 }
-                total++;
             }
             i++;
             j++;
         }
 
         ScoreVO scoreVO = new ScoreVO();
-        scoreVO.setOpen((double) correctNumMap.get("open") / total);
-        scoreVO.setHigh((double) correctNumMap.get("high") / total);
-        scoreVO.setLow((double) correctNumMap.get("low") / total);
-        scoreVO.setClose((double) correctNumMap.get("close") / total);
-        scoreVO.setVolume((double) correctNumMap.get("volume") / total);
+        scoreVO.setOpen((double) correctNumMap.get("open") / openTotal);
+        scoreVO.setHigh((double) correctNumMap.get("high") / highTotal);
+        scoreVO.setLow((double) correctNumMap.get("low") / lowTotal);
+        scoreVO.setClose((double) correctNumMap.get("close") / closeTotal);
+        scoreVO.setVolume((double) correctNumMap.get("volume") / volumeTotal);
         return scoreVO;
     }
 
@@ -166,7 +182,7 @@ public class PredictionServiceImpl implements PredictionService {
                 case "volume" -> upPredictionIntegrityVO.setVolume(moreProbToUp);
             }
         });
-        return tempMap.values().stream().sorted().toList();
+        return tempMap.values().stream().sorted(Comparator.comparing(UpPredictionIntegrityVO::getTime)).toList();
     }
 
     private Date getDateOrException(String dateStr) {
