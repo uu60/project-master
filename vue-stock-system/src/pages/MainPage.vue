@@ -1,15 +1,6 @@
 <template>
   <div>
     <section class="container">
-      <!--左容器-->
-      <section class="itemLeft">
-        <ItemPage>
-          <ItemOne/>
-        </ItemPage>
-        <ItemPage>
-          <ItemTwo/>
-        </ItemPage>
-      </section>
 
       <!--     中容器-->
       <el-card class="itemCenter" shadow="always">
@@ -37,7 +28,7 @@
           <ItemThree/>
         </ItemPage>
         <ItemPage>
-          <ItemFour/>
+          <ItemOne/>
         </ItemPage>
       </section>
     </section>
@@ -387,13 +378,13 @@ export default {
   padding: .125rem .125rem 0;
   display: flex;
   //设置左右份数
-  .itemLeft, .itemRight {
-    flex: 3;
+  .itemRight {
+    flex: 9;
   }
 
 
   .itemCenter {
-    flex: 5;
+    flex: 13;
     height: 10.5 rpx;
     //border: 1px solid blue;
     padding: 0.1rem;

@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="block">
-      <el-descriptions class="margin-top" title="The increase probability" :column="3" :size="'mini'" border>
+      <el-descriptions class="margin-top" title="The increase probability" :column="1" :size="'medium'" border>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-user"></i>
-            用户名
+            Stock Name
           </template>
           kooriookami
         </el-descriptions-item>
@@ -13,14 +13,15 @@
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-mobile-phone"></i>
-            手机号
+            Open Price
           </template>
           18100000000
         </el-descriptions-item>
+
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-location-outline"></i>
-            居住地
+            Close Price
           </template>
           苏州市
         </el-descriptions-item>
@@ -28,14 +29,15 @@
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-tickets"></i>
-            备注
+            High Price
           </template>
           <el-tag size="small">学校</el-tag>
         </el-descriptions-item>
+
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-office-building"></i>
-            联系地址
+            Low Price
           </template>
           江苏省苏州市吴中区吴中大道 1188 号
         </el-descriptions-item>

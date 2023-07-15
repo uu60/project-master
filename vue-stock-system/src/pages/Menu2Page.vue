@@ -47,9 +47,12 @@ export default {
     // })
       console.log("item1", item1)
       console.log("item2", item2)
+      const flag = 0
       item1.forEach(a => {
         console.log("a", this.StockList[a])
+        if (localStorage.key(this.StockList[a].label)) {
 
+        }
       })
     }
   },
