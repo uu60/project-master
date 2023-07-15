@@ -188,7 +188,7 @@ public class PredictionServiceImpl implements PredictionService {
         }
         code = code.toUpperCase();
         List<UpPredictionEntity> entities =
-                upPredictionMapper.selectList(new LambdaQueryWrapper<UpPredictionEntity>().eq(UpPredictionEntity::getCode, code).apply("date({0}}) = date(time)", date));
+                upPredictionMapper.selectList(new LambdaQueryWrapper<UpPredictionEntity>().eq(UpPredictionEntity::getCode, code).apply("date({0}) = date(time)", date));
         return entities.stream().map(entity -> new GetUpProbabilityVO(entity.getCode(), entity.getField(),
                 entity.getUp(), entity.getTime())).toList();
     }
