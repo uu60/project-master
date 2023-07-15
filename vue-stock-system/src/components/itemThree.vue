@@ -8,7 +8,7 @@
                 :data="tableData"
                 :row-class-name="tableRowClassName"
                 :row-style="{height: '0'}"
-                style="width: 100%;"
+                style="width: 100%; "
                 height="calc(5.125rem - 54px)"
         >
             <div slot="empty" style="text-align: center">

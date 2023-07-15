@@ -1,7 +1,7 @@
 <template>
     <div>
         <!--设置插槽-->
-        <el-card class="item" shadow="always">
+        <el-card class="item" shadow="always" style="min-width: 155px">
             <slot></slot>
         </el-card>
     </div>

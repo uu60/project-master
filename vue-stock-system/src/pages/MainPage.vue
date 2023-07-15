@@ -3,7 +3,7 @@
     <section class="container">
 
       <!--     中容器-->
-      <el-card class="itemCenter" shadow="always">
+      <el-card class="itemCenter" shadow="always" style="min-width: 380px">
         <!--        <el-button type="warning" icon="el-icon-star-off" circle></el-button>-->
         <el-row>
           <el-col span="4" offset="11">
@@ -391,6 +391,5 @@ export default {
     margin: .25rem;
   }
 }
-
 
 </style>
