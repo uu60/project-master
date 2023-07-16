@@ -9,7 +9,7 @@
                 :row-class-name="tableRowClassName"
                 :row-style="{height: '0'}"
                 style="width: 100%; "
-                height="calc(5.125rem - 54px)"
+                height="calc(6.125rem - 54px)"
         >
             <div slot="empty" style="text-align: center">
                 <el-empty :image-size="108" description="no records"/>

@@ -17,7 +17,7 @@ export default {
 <style lang="less" scoped>
 .item {
   width: 400px;
-  height: 5.125rem;
+  height: 6.125rem;
   margin: .25rem;
 }
 </style>

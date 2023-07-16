@@ -7,7 +7,7 @@
             <i class="el-icon-user"></i>
             Stock Name
           </template>
-          kooriookami
+          {{stockName}}
         </el-descriptions-item>
 
         <el-descriptions-item>
@@ -15,7 +15,7 @@
             <i class="el-icon-mobile-phone"></i>
             Open Price
           </template>
-          18100000000
+          {{openPrice}}
         </el-descriptions-item>
 
         <el-descriptions-item>
@@ -23,7 +23,7 @@
             <i class="el-icon-location-outline"></i>
             Close Price
           </template>
-          苏州市
+          {{closePrice}}
         </el-descriptions-item>
 
         <el-descriptions-item>
@@ -31,7 +31,7 @@
             <i class="el-icon-tickets"></i>
             High Price
           </template>
-          <el-tag size="small">学校</el-tag>
+          {{highPrice}}
         </el-descriptions-item>
 
         <el-descriptions-item>
@@ -39,7 +39,7 @@
             <i class="el-icon-office-building"></i>
             Low Price
           </template>
-          江苏省苏州市吴中区吴中大道 1188 号
+          {{lowPrice}}
         </el-descriptions-item>
       </el-descriptions>
 
@@ -55,7 +55,13 @@ import axios from "axios";
 export default {
   name: "itemOne",
   data() {
-    return {}
+    return {
+      stockName: "--",
+      openPrice: "--",
+      closePrice: "--",
+      highPrice: "--",
+      lowPrice: "--"
+    }
   },
   methods: {},
 
@@ -71,6 +77,17 @@ export default {
         }
       }).then(res => {
         console.log("yuce res", res.data)
+        if (res.data.code === 0) {
+          if (res.data.data != null) {
+            this.stockName = res.data.data.code;
+            this.openPrice = res.data.data.open;
+            this.closePrice = res.data.data.close;
+            this.highPrice = res.data.data.high;
+            this.lowPrice = res.data.data.low
+          }
+        } else {
+          this.$message.error("日期格式有问题")
+        }
       }).catch(err => {
         console.error(err);
       })
