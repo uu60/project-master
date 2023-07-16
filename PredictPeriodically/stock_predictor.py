@@ -20,7 +20,6 @@ import time
 
 start_time = time.time()
 
-
 def one_attr_predictor(company_name, attribute_to_be_predicted, num_days):
     # Reading stock data from yahoo
     yf.pdr_override()
