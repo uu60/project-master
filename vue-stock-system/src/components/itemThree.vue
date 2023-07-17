@@ -109,6 +109,7 @@ export default {
             // console.log(row);
             pubsub.publish("请显示本行内容", row.stockName)
             pubsub.publish("请显示本行预测数据", row.stockName)
+            pubsub.publish("请显示本行上涨概率", row.stockName)
         },
         //点击delete
         handleDelete(row) {

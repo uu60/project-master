@@ -92,6 +92,31 @@ export default {
         console.error(err);
       })
     });
+
+    pubsub.subscribe("请显示本行上涨概率", (msgName, foredata) => {
+      axios.get(`/api/prediction/api/v1/up/${foredata}?date=${new Date().toISOString()}`, {
+        headers: {
+          // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+          'Authorization': localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        }
+      }).then(res => {
+        console.log("yuce res", res.data)
+        if (res.data.code === 0) {
+          if (res.data.data != null) {
+            this.stockName = res.data.data.code;
+            this.openPrice = res.data.data.open;
+            this.closePrice = res.data.data.close;
+            this.highPrice = res.data.data.high;
+            this.lowPrice = res.data.data.low
+          }
+        } else {
+          this.$message.error("日期格式有问题")
+        }
+      }).catch(err => {
+        console.error(err);
+      })
+    })
   }
 }
 </script>

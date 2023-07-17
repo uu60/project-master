@@ -5,6 +5,7 @@ import SearchPage from "@/pages/SearchPage";
 import MainComponent from "@/components/MainComponent";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
+import Menu3Page from "@/pages/Menu3Page";
 
 const router = new VueRouter({
     routes: [
@@ -35,6 +36,11 @@ const router = new VueRouter({
                     path: 'Menu2',
                     meta:{isLogin:true},
                     component: Menu2Page
+                },
+                {
+                    path: 'Menu3',
+                    meta:{isLogin:true},
+                    component: Menu3Page
                 },
             ]
         },

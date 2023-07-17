@@ -142,6 +142,8 @@ export default {
       console.log("jieshouyuceshuju", foredata)
       this.initForecastChart(foredata.data)
     })
+
+
   },
   methods: {
     initData(data) {

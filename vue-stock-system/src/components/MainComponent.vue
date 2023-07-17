@@ -10,6 +10,7 @@
               <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" style="min-width: 200px">
                 <el-menu-item index="/MainComponent/Home">Home</el-menu-item>
                 <el-menu-item index="/MainComponent/Menu2">Menu 2</el-menu-item>
+                <el-menu-item index="/MainComponent/Menu3">Menu 3</el-menu-item>
               </el-menu>
             </div>
           </el-col>
