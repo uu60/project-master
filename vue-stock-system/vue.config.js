@@ -8,6 +8,9 @@ module.exports = {
         proxy: {
             '/api': {
                 target: 'http://8.137.96.5',
+            },
+            '/theDeal':{
+                target: 'https://www.thedeal.com/news-and-media/'
             }
         }
     },
