@@ -68,6 +68,7 @@ export default {
   mounted() {
     pubsub.subscribe('数据', (msgName, data) => {
       name = data.data[0].code
+      var today = new Date()
       console.log("name", name)
       axios.get(`/api/prediction/api/v1/up/${name}?date=${new Date().toISOString()}`, {
         headers: {
@@ -79,11 +80,11 @@ export default {
         console.log("yuce res", res.data)
         if (res.data.code === 0) {
           if (res.data.data != null) {
-            this.stockName = res.data.data.code;
-            this.openPrice = res.data.data.open;
-            this.closePrice = res.data.data.close;
-            this.highPrice = res.data.data.high;
-            this.lowPrice = res.data.data.low
+            this.stockName = res.data.data[0].code;
+            this.openPrice = res.data.data[0].up.toFixed(4);
+            this.closePrice = res.data.data[3].up.toFixed(4);
+            this.highPrice = res.data.data[1].up.toFixed(4);
+            this.lowPrice = res.data.data[2].up.toFixed(4)
           }
         } else {
           this.$message.error("日期格式有问题")
@@ -104,11 +105,11 @@ export default {
         console.log("yuce res", res.data)
         if (res.data.code === 0) {
           if (res.data.data != null) {
-            this.stockName = res.data.data.code;
-            this.openPrice = res.data.data.open;
-            this.closePrice = res.data.data.close;
-            this.highPrice = res.data.data.high;
-            this.lowPrice = res.data.data.low
+            this.stockName = res.data.data[0].code;
+            this.openPrice = res.data.data[0].up.toFixed(4);
+            this.closePrice = res.data.data[3].up.toFixed(4);
+            this.highPrice = res.data.data[1].up.toFixed(4);
+            this.lowPrice = res.data.data[2].up.toFixed(4)
           }
         } else {
           this.$message.error("日期格式有问题")

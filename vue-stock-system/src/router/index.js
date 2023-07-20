@@ -7,6 +7,8 @@ import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import Menu3Page from "@/pages/Menu3Page";
 import Menu4Page from "@/pages/Menu4Page";
+import CommunicationServices from "@/industrial/CommunicationServices";
+import ConsumerCyclical from "@/industrial/ConsumerCyclical";
 
 const router = new VueRouter({
     routes: [
@@ -47,6 +49,16 @@ const router = new VueRouter({
                     path: 'Menu4',
                     meta:{isLogin:true},
                     component: Menu4Page
+                },
+                {
+                    path: 'CommunicationServices',
+                    meta:{isLogin:true},
+                    component: CommunicationServices
+                },
+                {
+                    path: 'ConsumerCyclical',
+                    meta:{isLogin:true},
+                    component: ConsumerCyclical
                 },
             ]
         },

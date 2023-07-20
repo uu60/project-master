@@ -79,9 +79,8 @@
 
     <el-breadcrumb separator="/">
       <el-breadcrumb-item>Industrials</el-breadcrumb-item>
-      <el-breadcrumb-item>My Collection</el-breadcrumb-item>
+      <el-breadcrumb-item>Consumer Cyclical</el-breadcrumb-item>
     </el-breadcrumb>
-
     <section class="container">
       <!--左容器-->
       <section class="itemLeft">
@@ -106,15 +105,16 @@
 </template>
 
 <script>
-import pubsub from "pubsub-js";
-import axios from "axios";
-import moment from "moment/moment";
 import * as echarts from "echarts";
+import moment from "moment";
+import axios from "axios";
+import pubsub from "pubsub-js";
 
 export default {
-  name: "Menu2Page",
+  name: "ConsumerCyclical",
   data() {
     return {
+      queryList: ["GOOGL", "META", "NFLX", "CMCSA", "TMUS", "DIS", "VZ", "T", "ATVI", "AMX"],
       StockList: this.QueryCollectionList(),
       selectList: [],
     }
@@ -228,6 +228,7 @@ export default {
       });
     }
   },
+
   methods: {
     getClosePrice(i) {
       var stockdata = JSON.parse(sessionStorage.getItem(this.StockList[i].label)).data
@@ -255,25 +256,58 @@ export default {
         return "negative"
       }
     },
+
     QueryCollectionList() {
+      var aaa = ["AAPL", "DIS", 'META', 'BA', 'NKE', 'HD']
       var StockList = []
-      axios.get('/api/display/api/v1/collect/list', {
-        headers: {
-          'Authorization': localStorage.getItem('token'),
-          'Content-Type': 'application/json'
-        }
-      })
-          .then(res => {
-            for (var i = 0; i < res.data.data.length; i++) {
-              StockList.push({
-                label: res.data.data[i].code,
-                key: i,
-              })
+      console.log("a",aaa)
+      for (var i = 0; i < aaa.length; i++) {
+        if (window.sessionStorage.getItem(aaa[i])) {
+          var result = JSON.parse(window.sessionStorage.getItem(aaa[i]))
+          console.log("result",result)
+          StockList.push({
+            label: result.data[0].code,
+            key: i
+          })
+        } else {
+          const today = new Date();
+          // 获取 30 天前的时间
+          const thirtyDaysAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
+          // 将时间转换为 ISO 时间字符串
+          const isoString = thirtyDaysAgo.toISOString();
+
+          axios.get(`/api/display/api/v1/data/daily/${aaa[i]}?fromDate=${thirtyDaysAgo.toISOString()}&toDate=${today.toISOString()}`, {
+            headers: {
+              // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+              'Authorization': localStorage.getItem('token'),
+              'Content-Type': 'application/json'
             }
           })
-          .catch(err => {
-            console.error(err);
-          });
+              .then(res => {
+                console.log(res.data)
+                if (res.data.code === 0) {
+                  // console.log("查到了数据",res.data)
+                  // console.log(res.data.data[0].code)
+                  window.sessionStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
+                  StockList.push({
+                    label: res.data.data[0].code,
+                    key: i,
+                  })
+
+                } else if (res.data.code === 1) {
+                  this.$message.error("The data has not been queried, please wait patiently before querying");
+                } else {
+                  this.$message.error(this.$store.state.serverErrMsg);
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              })
+        }
+
+      }
+
+
       // console.log("stockList", StockList)
       return StockList
     },
@@ -331,6 +365,7 @@ export default {
   font-size: 16px;
   font-weight: bold
 }
+
 .price {
   font-size: 15px;
   font-weight: bold;

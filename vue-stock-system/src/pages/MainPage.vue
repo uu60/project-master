@@ -4,10 +4,9 @@
 
       <!--     中容器-->
       <el-card class="itemCenter" shadow="always" style="min-width: 380px">
-        <!--        <el-button type="warning" icon="el-icon-star-off" circle></el-button>-->
         <el-row>
           <el-col span="4" offset="11">
-            <h1 style="font-size: 20px;margin-left: 10px">{{ stockName }}</h1>
+            <h1 style="font-size: 20px;margin-left: 10px; ">{{ stockName }}</h1>
           </el-col>
           <el-col span="2" offset="4">
             <el-button type="primary" circle size="mini" class="el-icon-refresh" @click="refresh" v-if="isShow"/>
@@ -17,6 +16,9 @@
                        @click="collection"></el-button>
           </el-col>
         </el-row>
+        <div slot="empty" style="text-align: center">
+          <el-empty :image-size="108" description="no records"/>
+        </div>
         <div class="echart" id="mychart" style="width:100%; height: 400px;"></div>
         <div class="echart" id="myforecastchart" style="width:100%; height: 300px;"></div>
       </el-card>

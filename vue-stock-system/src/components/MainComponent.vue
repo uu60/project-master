@@ -9,7 +9,12 @@
             <div>
               <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" style="min-width: 200px">
                 <el-menu-item index="/MainComponent/Home">Home</el-menu-item>
-                <el-menu-item index="/MainComponent/Menu2">Menu 2</el-menu-item>
+                <el-submenu index="/MainComponent/Menu2">
+                  <template slot="title">Industrials</template>
+                  <el-menu-item index="/MainComponent/Menu2">My Collection</el-menu-item>
+                  <el-menu-item index="/MainComponent/CommunicationServices">Communication Services</el-menu-item>
+                </el-submenu>
+
                 <el-menu-item index="/MainComponent/Menu3">Menu 3</el-menu-item>
                 <el-menu-item index="/MainComponent/Menu4">Menu 4</el-menu-item>
               </el-menu>
