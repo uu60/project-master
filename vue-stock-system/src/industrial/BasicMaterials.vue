@@ -108,10 +108,10 @@ import axios from "axios";
 import pubsub from "pubsub-js";
 
 export default {
-  name: "CommunicationServices",
+  name: "BasicMaterials",
   data() {
     return {
-      queryList: ["GOOGL", "META", "NFLX", "CMCSA", "TMUS", "DIS", "VZ", "T", "ATVI", "AMX"],
+      queryList: ['LIN', 'BHP', 'RIO', 'SHW', 'APD', 'VALE', 'SCCO','FCX','ECL','NUE'],
       StockList: this.QueryCollectionList(),
       selectList: [],
     }

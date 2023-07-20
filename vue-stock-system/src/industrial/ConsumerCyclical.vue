@@ -77,14 +77,11 @@
       </el-row>
     </section>
 
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item>Industrials</el-breadcrumb-item>
-      <el-breadcrumb-item>Consumer Cyclical</el-breadcrumb-item>
-    </el-breadcrumb>
+
     <section class="container">
       <!--左容器-->
       <section class="itemLeft">
-        <el-card shadow="always">
+        <el-card shadow="always" style="height: 440px">
           <el-transfer
               filter-placeholder="请输入股票单词"
               v-model="selectList"
@@ -114,7 +111,7 @@ export default {
   name: "ConsumerCyclical",
   data() {
     return {
-      queryList: ["GOOGL", "META", "NFLX", "CMCSA", "TMUS", "DIS", "VZ", "T", "ATVI", "AMX"],
+      queryList: ['AMZN', 'TSLA', 'HD', 'BABA', 'TM', 'MCD', 'NKE', 'LOW', 'SBUX', 'PDD'],
       StockList: this.QueryCollectionList(),
       selectList: [],
     }

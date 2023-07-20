@@ -9,6 +9,9 @@ import Menu3Page from "@/pages/Menu3Page";
 import Menu4Page from "@/pages/Menu4Page";
 import CommunicationServices from "@/industrial/CommunicationServices";
 import ConsumerCyclical from "@/industrial/ConsumerCyclical";
+import BasicMaterials from "@/industrial/BasicMaterials";
+import yahoo from "@/news/yahoo";
+
 
 const router = new VueRouter({
     routes: [
@@ -48,7 +51,7 @@ const router = new VueRouter({
                 {
                     path: 'Menu4',
                     meta:{isLogin:true},
-                    component: Menu4Page
+                    component: Menu4Page,
                 },
                 {
                     path: 'CommunicationServices',
@@ -59,6 +62,16 @@ const router = new VueRouter({
                     path: 'ConsumerCyclical',
                     meta:{isLogin:true},
                     component: ConsumerCyclical
+                },
+                {
+                    path: 'BasicMaterials',
+                    meta:{isLogin:true},
+                    component: BasicMaterials
+                },
+                {
+                    path: 'yahoo',
+                    meta:{isLogin:true},
+                    component: yahoo
                 },
             ]
         },

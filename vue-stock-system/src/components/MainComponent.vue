@@ -13,10 +13,17 @@
                   <template slot="title">Industrials</template>
                   <el-menu-item index="/MainComponent/Menu2">My Collection</el-menu-item>
                   <el-menu-item index="/MainComponent/CommunicationServices">Communication Services</el-menu-item>
+                  <el-menu-item index="/MainComponent/ConsumerCyclical">Consumer Cyclical</el-menu-item>
+                  <el-menu-item index="/MainComponent/BasicMaterials">Basic Materials</el-menu-item>
                 </el-submenu>
 
                 <el-menu-item index="/MainComponent/Menu3">Menu 3</el-menu-item>
-                <el-menu-item index="/MainComponent/Menu4">Menu 4</el-menu-item>
+                <el-submenu index="/MainComponent/Menu4">
+                  <template slot="title">News</template>
+                  <el-menu-item index="/MainComponent/Menu4">Wall Street</el-menu-item>
+                  <el-menu-item index="/MainComponent/yahoo">Yahoo Finance</el-menu-item>
+                </el-submenu>
+
               </el-menu>
             </div>
           </el-col>

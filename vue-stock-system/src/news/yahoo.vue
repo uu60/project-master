@@ -1,14 +1,14 @@
 <template>
   <div style="height:866px;">
     <!--style="left: 50px; right:50px; top: 50px; bottom: 50px; width: 1400px; height: 600px"-->
-    <iframe src="https://wallstreetcn.com/news/global" id="qt"></iframe>
+    <iframe src="https://www.marketwatch.com/" id="qt"></iframe>
   </div>
 </template>
 
 
 <script>
 export default {
-  name: "Menu4Page",
+  name: "yahoo",
   data() {
     return {
       activeIndex: ''

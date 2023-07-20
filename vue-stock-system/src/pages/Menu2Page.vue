@@ -76,16 +76,10 @@
         </el-col>
       </el-row>
     </section>
-
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item>Industrials</el-breadcrumb-item>
-      <el-breadcrumb-item>My Collection</el-breadcrumb-item>
-    </el-breadcrumb>
-
     <section class="container">
       <!--左容器-->
       <section class="itemLeft">
-        <el-card shadow="always">
+        <el-card shadow="always" style="height: 440px">
           <el-transfer
               filter-placeholder="请输入股票单词"
               v-model="selectList"
@@ -96,9 +90,11 @@
 
       <!--右容器-->
       <section class="itemRight">
+
         <el-card shadow="always">
           <div class="echart" id="mychart" style="width:100%; height: 400px;"></div>
         </el-card>
+
       </section>
     </section>
 
@@ -331,8 +327,15 @@ export default {
   font-size: 16px;
   font-weight: bold
 }
+
 .price {
   font-size: 15px;
   font-weight: bold;
 }
+
+.myColor .el-breadcrumb__inner {
+  color: #3A6DF3;
+  font-size: 16px;
+}
+
 </style>
