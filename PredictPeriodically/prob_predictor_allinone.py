@@ -50,17 +50,20 @@ def prob_predictor(ticker_list, attri):
     scaler = MinMaxScaler(feature_range=(0, 1))
     df_binary['price'] = scaler.fit_transform(df_binary['price'].values.reshape(-1, 1))
 
-    # Split into training and testing data
-    training_size = int(len(df_binary) * 0.65)
-    train_df, test_df = df_binary[:training_size], df_binary[training_size:]
+    # Split into training, validation and testing data
+    training_size = int(len(df_binary) * 0.6)
+    train_df, valid_df = df_binary[:training_size], df_binary[training_size:]
+    test_df = valid_df[int(len(valid_df) * 0.5):]
+    valid_df = valid_df[:int(len(valid_df) * 0.5)]
 
     # Preparing the dataset
     train = TimeseriesGenerator(train_df['price'].values, train_df['up'].values, length=100, batch_size=64)
+    valid = TimeseriesGenerator(valid_df['price'].values, valid_df['up'].values, length=100, batch_size=64)
     test = TimeseriesGenerator(test_df['price'].values, test_df['up'].values, length=100, batch_size=64)
     X_train, y_train = train[0][0], train[0][1]
-    X_test, y_test = test[0][0], test[0][1]
+    X_valid, y_valid = valid[0][0], valid[0][1]
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
-    X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+    X_valid = np.reshape(X_valid, (X_valid.shape[0], X_valid.shape[1], 1))
 
     # Define LSTM network
     model = Sequential()
@@ -79,9 +82,9 @@ def prob_predictor(ticker_list, attri):
     # Fit the model
     history = model.fit(
         train,
-        validation_data=test,
+        validation_data=valid,
         steps_per_epoch=len(train),
-        validation_steps=len(test),
+        validation_steps=len(valid),
         epochs=150,
         callbacks=[es],
         verbose=0
