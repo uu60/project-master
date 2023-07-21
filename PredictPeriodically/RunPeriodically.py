@@ -24,9 +24,9 @@ def run_scheduler():
         # output_df=prob_predictor_with_sse.Entry(ticker)
         # OperateDB.InsertProbPredictResult(output_df)
 
-    # # probability predictor all in one
-    # output_df=prob_predictor_allinone.Entry(ticker_list)
-    # OperateDB.InsertProbPredictResult(output_df)
+    # probability predictor all in one
+    output_df=prob_predictor_allinone.Entry(ticker_list)
+    OperateDB.InsertProbPredictResult(output_df)
     
 
 # 第一次运行程序
