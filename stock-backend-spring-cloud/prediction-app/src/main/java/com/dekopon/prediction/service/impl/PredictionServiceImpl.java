@@ -21,6 +21,7 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
@@ -46,7 +47,7 @@ public class PredictionServiceImpl implements PredictionService {
     SimpleDateFormat isoSdf;
 
     @Override
-    public synchronized ScoreVO computeAndGetScore(String code, String fromDate, String toDate) {
+    public ScoreVO computeAndGetScore(String code, String fromDate, String toDate) {
         code = code.toUpperCase();
         if (!StringUtils.hasText(fromDate) || !StringUtils.hasText(toDate)) {
             throw new RException(4, "Time period must be explicit.");
@@ -85,6 +86,9 @@ public class PredictionServiceImpl implements PredictionService {
     }
 
     private ScoreVO doComputeScore(List<KDataEntityVO> history, List<UpPredictionEntity> prediction) {
+        if (CollectionUtils.isEmpty(history) || CollectionUtils.isEmpty(prediction)) {
+            return ScoreVO.INVALID_SCORE_VO;
+        }
         List<UpPredictionIntegrityVO> upPredictionIntegrityVOs = processUpPredictionEntityToIntegrityMap(prediction);
         Map<String, Integer> correctNumMap = new HashMap<>();
         String[] fields = {"open", "high", "low", "close", "volume"};
@@ -160,6 +164,11 @@ public class PredictionServiceImpl implements PredictionService {
         scoreVO.setLow((double) correctNumMap.get("low") / lowTotal);
         scoreVO.setClose((double) correctNumMap.get("close") / closeTotal);
         scoreVO.setVolume((double) correctNumMap.get("volume") / volumeTotal);
+        scoreVO.setLowNum(lowTotal);
+        scoreVO.setHighNum(highTotal);
+        scoreVO.setOpenNum(openTotal);
+        scoreVO.setCloseNum(closeTotal);
+        scoreVO.setVolumeNum(volumeTotal);
         return scoreVO;
     }
 

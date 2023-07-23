@@ -1,7 +1,9 @@
 package com.dekopon.prediction.pojo;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,9 +11,10 @@ import java.util.Date;
  * @since 2023/7/8 16:01
  */
 @AllArgsConstructor
-public class GetUpProbabilityVO {
-    String code;
-    String field;
-    Double up;
-    Date time;
+@Data
+public class GetUpProbabilityVO implements Serializable {
+    private String code;
+    private String field;
+    private Double up;
+    private Date time;
 }
