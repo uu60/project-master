@@ -1,6 +1,9 @@
 <template>
-  <el-card shadow="always" class="container" style="height: 10.5rpx">
-    <div class="block" style="padding: 10px">
+  <el-card shadow="always" class="container" style="height: 600px" :body-style="{width: '100%'}">
+    <el-row type="flex" justify="center">
+        <h1>Historical Model Accuracy Rate</h1>
+    </el-row>
+      <div class="block" style="padding: 10px">
       <el-date-picker
           type="daterange"
           v-model="value"
@@ -15,9 +18,7 @@
               border
               :cell-style="{padding: '5px'}"
               :row-style="{height: '20px'}"
-              style="width:1400px"
-              height="calc(8.5rpx - 26px)">
-
+              style="width:100%; height: calc(100% - 100px)">
       <el-table-column
           prop="stockName"
           label="Stock Name"
@@ -78,16 +79,7 @@ export default {
       value: '',
       pagesize: 5,
       currentPage: 1,
-      tableData: [
-        {
-          stockName: 'AAPL',
-          open: '100',
-          close: '100',
-          high: '100',
-          low: '100',
-          volume: '100',
-        }
-      ],
+      tableData: [],
       pickerOptions: {
         disabledDate(time) {
           var now = new Date()
@@ -161,7 +153,7 @@ export default {
       })
           .then(res => {
             for (var i = 0; i < res.data.data.length; i++) {
-              var code =  res.data.data[i].code
+              let code =  res.data.data[i].code
               const today = new Date();
               // 获取 7 天前的时间
               const AWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -176,11 +168,11 @@ export default {
                 if (res1.data.code === 0) {
                   this.tableData.push({
                     stockName: code,
-                    open: res1.data.data.open,
-                    close: res1.data.data.close,
-                    high: res1.data.data.high,
-                    low: res1.data.data.low,
-                    volume: res1.data.data.volume
+                    open: res1.data.data.open * 100 + '%',
+                    close: res1.data.data.close * 100 + '%',
+                    high: res1.data.data.high * 100 + '%',
+                    low: res1.data.data.low * 100 + '%',
+                    volume: res1.data.data.volume * 100 + '%'
                   })
                 }
               }).catch(err => {
@@ -200,7 +192,6 @@ export default {
 .container {
   min-width: 1200px;
   max-width: 2048px;
-  height: 8.5 rpx;
   margin: 0 auto;
   padding: .125rem .125rem 0;
   display: flex;

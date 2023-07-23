@@ -1,10 +1,9 @@
 <template>
-    <div>
-        <!--设置插槽-->
-        <el-card class="item" shadow="always" style="min-width: 155px">
-            <slot></slot>
-        </el-card>
-    </div>
+  <!--设置插槽-->
+    <el-card :body-style="{width: '100%', height: '100%'}" class="item" shadow="always"
+             style="min-width: 155px; width: calc(100% - 27px); margin: 13.5px">
+        <slot></slot>
+    </el-card>
 </template>
 
 <script>
