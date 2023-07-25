@@ -120,6 +120,22 @@ export default {
                             window.sessionStorage.setItem(res.data.data[0].code, JSON.stringify(res.data))
 
                         } else if (res.data.code == 1) {
+                          axios.get(`/api/display/api/v1/data/update/${this.keyword}`, {
+                            headers: {
+                              // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
+                              'Authorization': localStorage.getItem('token'),
+                              'Content-Type': 'application/json'
+                            }
+                          }).then(res => {
+                            console.log("刷新", res.data)
+                            if (res.data.code === 0) {
+                              this.$message.success('It is already the latest.')
+                            } else {
+                              this.$message.info('Please wait for update.')
+                            }
+                          }).catch(err => {
+                            console.error(err);
+                          })
                             this.$message.error("The data has not been queried, please wait patiently before querying");
                             pubsub.publish("clear", res.data.code)
                         } else {

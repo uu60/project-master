@@ -118,7 +118,7 @@ export default {
     name: "CommunicationServices",
     data() {
         return {
-            queryList: ["GOOGL", "META", "NFLX", "CMCSA", "TMUS", "DIS", "VZ", "T", "ATVI", "AMX"],
+            queryList: ["LIN", "BHP", "RIO", "SHW", "APD", "CTA-PB", "VALE", "SCCO", "FCX", "ECL"],
             StockList: this.QueryCollectionList(),
             selectList: [],
             hasChosen: false
