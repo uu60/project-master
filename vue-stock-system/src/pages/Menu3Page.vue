@@ -1,5 +1,5 @@
 <template>
-  <el-card shadow="always" class="container" style="height: 600px" :body-style="{width: '100%'}">
+  <el-card shadow="always" class="container" style="height: 400px" :body-style="{width: '100%'}">
     <el-row type="flex" justify="center">
         <h1>Historical Model Accuracy Rate</h1>
     </el-row>

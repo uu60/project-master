@@ -264,7 +264,7 @@ export default {
         },
 
         QueryCollectionList() {
-            var aaa = ["AAPL", "DIS", 'META', 'BA', 'NKE', 'HD']
+            var aaa =  ["AMZN", "TSLA", "HD", "BABA", "TM", "MCD", "NKE", "LOW", "SBUX", "BKNG"]
             var StockList = []
             console.log("a", aaa)
             for (var i = 0; i < aaa.length; i++) {

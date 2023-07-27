@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width: 1300px">
     <section class="up">
       <el-row :gutter="20" style="height: 80px">
         <!--1        -->
@@ -76,25 +76,33 @@
         </el-col>
       </el-row>
     </section>
+
+
     <section class="container">
       <!--左容器-->
       <section class="itemLeft">
-        <el-card shadow="always" style="height: 440px">
-          <el-transfer
-              filter-placeholder="请输入股票单词"
-              v-model="selectList"
-              :data="StockList">
-          </el-transfer>
+        <el-card :body-style="{height: '100%',padding: '5px'}" shadow="always" style="height: 500px">
+          <el-row style="height: 100%" type="flex" justify="center" align="middle">
+            <el-transfer
+                :titles="['Candidates', 'Chosen']"
+                v-model="selectList"
+                :data="StockList"
+                filter-placeholder="请输入股票单词"
+                style="padding: 0; margin: 0; text-align: start">
+            </el-transfer>
+          </el-row>
         </el-card>
       </section>
 
       <!--右容器-->
       <section class="itemRight">
-
-        <el-card shadow="always">
-          <div class="echart" id="mychart" style="width:100%; height: 400px;"></div>
+        <el-card :body-style="{height: '100%'}" shadow="always" style="height: 500px">
+          <el-row v-if="!hasChosen" style="color: gray; font-size: x-large; margin-top: 50px; text-align: center">Please select two stocks to show here.</el-row>
+          <el-row v-if="hasChosen" style="text-align: center">
+            <h1 style="font-size: x-large">Comparison</h1>
+          </el-row>
+          <div id="mychart" class="echart" style="width:100%; height: 400px;"></div>
         </el-card>
-
       </section>
     </section>
 
@@ -279,7 +287,7 @@ export default {
 
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 .container {
   min-width: 1200px;
   max-width: 2048px;
@@ -333,9 +341,14 @@ export default {
   font-weight: bold;
 }
 
-.myColor .el-breadcrumb__inner {
-  color: #3A6DF3;
-  font-size: 16px;
+.el-transfer__buttons {
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
+.el-transfer-panel {
+  margin: 0;
+}
 </style>
