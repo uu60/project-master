@@ -1,54 +1,58 @@
 <template>
-  <el-card shadow="always" class="container" style="height: 400px" :body-style="{width: '100%'}">
+  <el-card shadow="always" class="container" style="height: 440px" :body-style="{width: '100%'}">
     <el-row type="flex" justify="center">
-        <h1>Historical Model Accuracy Rate</h1>
+      <h1>Historical Machine Learning Model Prediction Hit Rate</h1>
     </el-row>
-      <div class="block" style="padding: 10px">
-      <el-date-picker
-          type="daterange"
-          v-model="value"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions">
-      </el-date-picker>
-    </div>
+
+    <el-row type="flex" justify="center" gutter="20" style="margin: 20px">
+
+      <el-button type="primary" plain @click="QueryCollectionList(7)">7 days</el-button>
+      <el-button type="primary" plain @click="QueryCollectionList(15)">15 days</el-button>
+      <el-button type="primary" plain @click="QueryCollectionList(30)">30 days</el-button>
+    </el-row>
+
+
     <!--分页器绑定到数据中      -->
-    <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-              border
-              :cell-style="{padding: '5px'}"
-              :row-style="{height: '20px'}"
-              style="width:100%; height: calc(100% - 100px)">
+    <el-table
+        :data="tableData.filter(data => !search || data.stockName.toLowerCase().includes(search.toLowerCase())).slice((currentPage-1)*pagesize,currentPage*pagesize)"
+        border
+        :cell-style="{padding: '5px'}"
+        :row-style="{height: '20px'}"
+        style="width:100%; height: calc(100% - 140px)">
       <el-table-column
+          align="center"
           prop="stockName"
           label="Stock Name"
-          min-width="10%">
+          min-width="25%">
       </el-table-column>
+
       <el-table-column
-          prop="open"
-          label="Open Price"
-          min-width="10%">
+          align="center"
+          prop=shuxing
+          :label=xianshi
+          min-width="25%">
       </el-table-column>
+
       <el-table-column
-          prop="close"
-          label="Close Price"
-          min-width="10%">
+          align="center"
+          prop="hit"
+          label="Correctly predicted days"
+          min-width="25%">
       </el-table-column>
+
+
       <el-table-column
-          prop="high"
-          label="High Price"
-          min-width="10%">
+          align="right"
+          min-width="20%">
+        <template slot="header" slot-scope="scope">
+          <el-input
+              v-model="search"
+              size="mini"
+              placeholder="输入关键字搜索"/>
+        </template>
       </el-table-column>
-      <el-table-column
-          prop="low"
-          label="Low Price"
-          min-width="10%">
-      </el-table-column>
-      <el-table-column
-          prop="volume"
-          label="Volume"
-          min-width="10%">
-      </el-table-column>
+
+
     </el-table>
 
     <el-pagination small
@@ -71,11 +75,12 @@ import axios from "axios";
 export default {
   name: "Menu3Page",
   mounted() {
-    this.QueryCollectionList();
+    this.QueryCollectionList(30);
 
   },
   data() {
     return {
+      xianshi: '',
       value: '',
       pagesize: 5,
       currentPage: 1,
@@ -113,6 +118,7 @@ export default {
           }]
 
       },
+      search: ''
     }
   },
   methods: {
@@ -144,7 +150,9 @@ export default {
       return defaultDate;
     },
 
-    QueryCollectionList() {
+    QueryCollectionList(a) {
+      this.tableData = []
+      this.xianshi = "Close price of " + a + " days"
       axios.get('/api/display/api/v1/collect/list', {
         headers: {
           'Authorization': localStorage.getItem('token'),
@@ -153,10 +161,11 @@ export default {
       })
           .then(res => {
             for (var i = 0; i < res.data.data.length; i++) {
-              let code =  res.data.data[i].code
+              let code = res.data.data[i].code
               const today = new Date();
+
               // 获取 7 天前的时间
-              const AWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+              const AWeekAgo = new Date(today.getTime() - a * 24 * 60 * 60 * 1000);
               axios.get(`/api/prediction/api/v1/score/${code}?fromDate=${AWeekAgo.toISOString().substring(0, 19) + 'Z'}&toDate=${today.toISOString().substring(0, 19) + 'Z'}`, {
                 headers: {
                   // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3enkiLCJhdXRob3JpdGllcyI6W10sImlhdCI6MTY4NzE4NDc3OCwiZXhwIjoxNjkyMzc0NDAwfQ.dcSj9KbPIlhum11f_93f6CkgEamQAjTUbD3HJ60U-CE',
@@ -164,20 +173,18 @@ export default {
                   'Content-Type': 'application/json'
                 }
               }).then(res1 => {
-                console.log("接口8", res1.data)
+                // console.log("接口8", res1.data)
                 if (res1.data.code === 0) {
                   this.tableData.push({
                     stockName: code,
-                    open: res1.data.data.open * 100 + '%',
-                    close: res1.data.data.close * 100 + '%',
-                    high: res1.data.data.high * 100 + '%',
-                    low: res1.data.data.low * 100 + '%',
-                    volume: res1.data.data.volume * 100 + '%'
+                    shuxing: res1.data.data.close !== "NaN" ? res1.data.data.close * 100 + '%' : 'no data',
+                    hit: res1.data.data.closeNum != null ? res1.data.data.closeNum : 'no data'
                   })
                 }
               }).catch(err => {
                 console.error(err);
               })
+              console.log("tableData", this.tableData)
             }
           })
           .catch(err => {

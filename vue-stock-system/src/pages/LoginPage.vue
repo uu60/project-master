@@ -190,7 +190,7 @@ body {
 
 <style scoped>
 .el-container {
-  background: url("~@/assets/aside.jpeg");
+  background: url("~@/assets/hku.png");
   background-size: 300px;
   height: 100vh;
   min-width: 1000px;
