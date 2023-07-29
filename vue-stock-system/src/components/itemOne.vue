@@ -2,7 +2,7 @@
   <div>
     <div class="block">
       <el-row justify="center" type="flex" style="margin-bottom: 10px">
-        <h1>Prediction of Increasing Probability</h1>
+        <h1>Growth Possibilities Forecast of Tomorrow</h1>
       </el-row>
 
       <el-row justify="center" type="flex" style="margin-bottom: 10px">

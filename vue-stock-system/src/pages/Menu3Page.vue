@@ -84,7 +84,6 @@ export default {
       value: '',
       pagesize: 5,
       currentPage: 1,
-      tableData: [],
       pickerOptions: {
         disabledDate(time) {
           var now = new Date()
@@ -118,7 +117,81 @@ export default {
           }]
 
       },
-      search: ''
+      search: '',
+      tableData:[]
+      // tableData: [],
+      // tableData: [
+      //   {
+      //     stockName: "GOOGL",
+      //     shuxing: '54.54%',
+      //     hit: 12
+      //   },
+      //   {
+      //     stockName: "META",
+      //     shuxing: '45.45%',
+      //     hit: 10
+      //   },
+      //   {
+      //     stockName: 'AAPL',
+      //     shuxing: '54.54%',
+      //     hit: 12
+      //   },
+      //   {
+      //     stockName: 'DIS',
+      //     shuxing: '50%',
+      //     hit: 11
+      //   },
+      //   {
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },
+      //   {
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },{
+      //     stockName: 'SBUX',
+      //     shuxing: '40.9%',
+      //     hit: 9
+      //   },
+      // ]
     }
   },
   methods: {

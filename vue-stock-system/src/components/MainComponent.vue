@@ -17,7 +17,7 @@
                                     <el-menu-item index="/MainComponent/BasicMaterials">Basic Materials</el-menu-item>
                                 </el-submenu>
 
-                                <el-menu-item index="/MainComponent/Menu3">Accuracy</el-menu-item>
+                                <el-menu-item index="/MainComponent/Menu3">Forecast history</el-menu-item>
                                 <el-submenu index="/MainComponent/Menu4">
                                     <template slot="title">News</template>
                                     <el-menu-item index="/MainComponent/Menu4">Wall Street</el-menu-item>
