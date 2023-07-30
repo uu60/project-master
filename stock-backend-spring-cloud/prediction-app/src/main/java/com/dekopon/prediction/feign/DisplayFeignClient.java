@@ -1,5 +1,6 @@
 package com.dekopon.prediction.feign;
 
+import com.dekopon.common.pojo.ObjR;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,4 +18,7 @@ public interface DisplayFeignClient {
             @RequestParam String fromDate,
             @RequestParam String toDate
     );
+
+    @GetMapping("/api/v1/data/update/{code}")
+    ObjR update(@PathVariable String code);
 }
